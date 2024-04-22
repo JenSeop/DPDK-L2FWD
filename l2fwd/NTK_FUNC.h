@@ -1,6 +1,9 @@
 #ifndef NTK_FUNC_H
 #define NTK_FUNC_H
 
+#include <stdalign.h>
+#include <rte_byteorder.h>
+#include <rte_stdatomic.h>
 #include <rte_mbuf_core.h>
 #include <rte_ether.h>
 #include <rte_ip.h>
