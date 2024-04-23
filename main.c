@@ -42,8 +42,6 @@
 #include <rte_ip.h>
 #include <rte_tcp.h>
 
-#include "NTK_FUNC.h"
-
 static volatile bool force_quit;
 
 /* MAC updating enabled by default */
@@ -219,9 +217,6 @@ l2fwd_main_loop(void)
 			BURST_TX_DRAIN_US;
 	struct rte_eth_dev_tx_buffer *buffer;
 
-	// ntk
-	struct ntk_ipv4_tuples ipv4_tup;
-
 	prev_tsc = 0;
 	timer_tsc = 0;
 
@@ -306,6 +301,7 @@ l2fwd_main_loop(void)
 				/* IPv4 & TCP Information Generator */
 				ipv4_tup = ntk_ipv4_gen(m);
 
+				// hashing -> move to hash table
 				printf("IP src = %d.%d.%d.%d, IP dst = %d.%d.%d.%d, port src = %u, port dst = %u, proto = %u\n",
 					(ipv4_tup.src_ip>>0) & 0XFF, // src ip
 					(ipv4_tup.src_ip>>8) & 0XFF,
