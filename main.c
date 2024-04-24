@@ -76,7 +76,7 @@ Bucket{
     int count;
 };
 
-uint32_t
+static uint32_t
 nstek_hashSession(struct Tuples tuple){
     uint32_t hash = 5381;
     hash = ((hash << 5) + hash) ^ (tuple.src_ip<<24) ^ (tuple.dst_ip<<24);
@@ -89,7 +89,7 @@ nstek_hashSession(struct Tuples tuple){
     return hash % BUCKET_SIZE;
 }
 
-int
+static int
 nstek_compareSession(struct Tuples a, struct Tuples b)
 {
     return (
@@ -115,7 +115,7 @@ nstek_createNode(struct Tuples tuple){
     return newNode;
 }
 
-void
+static void
 nstek_createBucket(struct Tuples tuple, struct Traffics traffic){
     uint32_t hashIndex = hashSession(tuple);
     struct Node* newNode = createNode(tuple);
@@ -141,7 +141,7 @@ nstek_createBucket(struct Tuples tuple, struct Traffics traffic){
     hashTable[hashIndex].traffic.rx += traffic.rx;
 }
 
-void
+static void
 nstek_removeSession(struct Tuples tuple){
     uint32_t hashIndex = hashSession(tuple);
     
@@ -172,7 +172,7 @@ nstek_removeSession(struct Tuples tuple){
     }
 }
 
-uint32_t
+static uint32_t
 nstek_searchSession(struct Tuples tuple){
     uint32_t hashIndex = hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
@@ -187,7 +187,7 @@ nstek_searchSession(struct Tuples tuple){
     return 0;
 }
 
-void
+static void
 nstek_print_stats(){
     struct Node* iterator;
     uint32_t firstSession = 0;
