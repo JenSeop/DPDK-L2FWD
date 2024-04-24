@@ -141,42 +141,46 @@ uint32_t searchSession(struct Tuples tuple){
 
 void display(){
     struct Node* iterator;
-    struct Tuples befTuple;
-
-    printf("\n========= display start ========= \n");
-
-    for (int i = 0; i<BUCKET_SIZE; i++)
-    {
+    uint32_t firstSession = 0;
+    uint32_t secondSesion = 0;
+    
+    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+    printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
+    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+    
+    for (int i = 1; i<BUCKET_SIZE; i++){
         iterator = hashTable[i].head;
+        secondSesion = hashTable[i].count - 1;
 
         if(hashTable[i].count)
-            printf("\nBucket[%d] => tx = %u rx = %u\n\n", i, hashTable[i].traffic.tx, hashTable[i].traffic.rx);
-        
-        while (iterator != NULL)
+            printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", i, hashTable[i].traffic.tx, hashTable[i].traffic.rx);
+
+        for(int j = 0; iterator; j++)
         {
-            printf("Session[%u]\tsrc_ip %d.%d.%d.%d\tdst_ip %d.%d.%d.%d\tsrc_port %u\tdst_port %u\tproto %u\n",
-                hashSession(iterator->tuple),
+            if(j == firstSession || j == secondSesion)
+                printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
+                    hashSession(iterator->tuple),
 
-                (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
-                (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
+                    (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
+                    (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
 
-                (iterator->tuple.dst_ip>>24) & 0XFF,(iterator->tuple.dst_ip>>16) & 0XFF,
-                (iterator->tuple.dst_ip>>8) & 0XFF,(iterator->tuple.dst_ip>>0) & 0XFF,
+                    (iterator->tuple.dst_ip>>24) & 0XFF,(iterator->tuple.dst_ip>>16) & 0XFF,
+                    (iterator->tuple.dst_ip>>8) & 0XFF,(iterator->tuple.dst_ip>>0) & 0XFF,
 
-                REV_ENDIAN(iterator->tuple.src_port),REV_ENDIAN(iterator->tuple.dst_port),
-                iterator->tuple.protocol
-            );
+                    REV_ENDIAN(iterator->tuple.src_port),REV_ENDIAN(iterator->tuple.dst_port),
+                    iterator->tuple.protocol
+                );
             iterator = iterator->next;
         }
-    }
 
-    printf("\n========= display complete ========= \n");
+        if(hashTable[i].count)
+            printf("+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+    }
 }
 
 int main(){
     hashTable = (struct Bucket *)malloc(BUCKET_SIZE * sizeof(struct Bucket));
     struct Traffics traffic = {4, 4};
-    printf("%u %u\n\n",traffic.tx,traffic.rx);
 
     for (int i=0; i < pkt; i++){
         struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
