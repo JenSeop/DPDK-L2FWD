@@ -48,12 +48,14 @@
 
 struct Bucket* hashTable = NULL;
 
-struct Traffics {
+struct
+Traffics {
     uint32_t tx; // Transmitt
     uint32_t rx; // Receive
 };
 
-struct Tuples {
+struct
+Tuples {
     uint32_t src_ip;
     uint32_t dst_ip;
     uint16_t src_port;
@@ -61,18 +63,21 @@ struct Tuples {
     uint8_t protocol;
 };
 
-struct Node {
+struct
+Node {
     struct Tuples tuple;
     struct Node* next;
 };
 
-struct Bucket{
+struct
+Bucket{
     struct Node* head;
     struct Traffics traffic;
     int count;
 };
 
-uint32_t hashSession(struct Tuples tuple){
+uint32_t
+nstek_hashSession(struct Tuples tuple){
     uint32_t hash = 5381;
     hash = ((hash << 5) + hash) ^ (tuple.src_ip<<24) ^ (tuple.dst_ip<<24);
     hash = ((hash << 5) + hash) ^ (tuple.src_ip<<16) ^ (tuple.dst_ip<<16);
@@ -84,7 +89,8 @@ uint32_t hashSession(struct Tuples tuple){
     return hash % BUCKET_SIZE;
 }
 
-int compareSession(struct Tuples a, struct Tuples b)
+int
+nstek_compareSession(struct Tuples a, struct Tuples b)
 {
     return (
             (
@@ -97,7 +103,8 @@ int compareSession(struct Tuples a, struct Tuples b)
         );
 }
 
-struct Node* createNode(struct Tuples tuple){
+struct Node*
+nstek_createNode(struct Tuples tuple){
     struct Node* newNode;
 
     newNode = (struct Node *)malloc(sizeof(struct Node));
@@ -108,7 +115,8 @@ struct Node* createNode(struct Tuples tuple){
     return newNode;
 }
 
-void createBucket(struct Tuples tuple, struct Traffics traffic){
+void
+nstek_createBucket(struct Tuples tuple, struct Traffics traffic){
     uint32_t hashIndex = hashSession(tuple);
     struct Node* newNode = createNode(tuple);
 
@@ -133,7 +141,8 @@ void createBucket(struct Tuples tuple, struct Traffics traffic){
     hashTable[hashIndex].traffic.rx += traffic.rx;
 }
 
-void removeSession(struct Tuples tuple){
+void
+nstek_removeSession(struct Tuples tuple){
     uint32_t hashIndex = hashSession(tuple);
     
     int flg = 0;
@@ -163,7 +172,8 @@ void removeSession(struct Tuples tuple){
     }
 }
 
-uint32_t searchSession(struct Tuples tuple){
+uint32_t
+nstek_searchSession(struct Tuples tuple){
     uint32_t hashIndex = hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
     int flg = 0;
@@ -177,7 +187,8 @@ uint32_t searchSession(struct Tuples tuple){
     return 0;
 }
 
-void nstek_print_stats(){
+void
+nstek_print_stats(){
     struct Node* iterator;
     uint32_t firstSession = 0;
     uint32_t secondSesion = 0;
