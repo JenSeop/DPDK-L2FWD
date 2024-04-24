@@ -143,6 +143,8 @@ void display(){
     struct Node* iterator;
     uint32_t firstSession = 0;
     uint32_t secondSesion = 0;
+    uint32_t txTotal = 0;
+    uint32_t rxTotal = 0;
     
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
@@ -153,7 +155,11 @@ void display(){
         secondSesion = hashTable[i].count - 1;
 
         if(hashTable[i].count)
+        {
+            txTotal += hashTable[i].traffic.tx;
+            rxTotal += hashTable[i].traffic.rx;
             printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", i, hashTable[i].traffic.tx, hashTable[i].traffic.rx);
+        }
 
         for(int j = 0; iterator; j++)
         {
@@ -176,11 +182,12 @@ void display(){
         if(hashTable[i].count)
             printf("+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     }
+    printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 }
 
 int main(){
     hashTable = (struct Bucket *)malloc(BUCKET_SIZE * sizeof(struct Bucket));
-    struct Traffics traffic = {4, 4};
+    struct Traffics traffic = {400, 400};
 
     for (int i=0; i < pkt; i++){
         struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
