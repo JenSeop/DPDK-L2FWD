@@ -74,7 +74,7 @@ Bucket{
     struct Node* head;
     struct Traffics traffic;
     int count;
-};
+};_nstek_createNode
 
 static uint32_t
 nstek_hashSession(struct Tuples tuple){
@@ -118,10 +118,10 @@ nstek_createNode(struct Tuples tuple){
 static void
 nstek_createBucket(struct Tuples tuple, struct Traffics traffic){
     uint32_t hashIndex = hashSession(tuple);
-    struct Node* newNode = createNode(tuple);
+    struct Node* newNode = nstek_createNode(tuple);
 
     // Open addressing for other sessions
-    if(hashTable[hashIndex].head && compareSession(tuple, hashTable[hashIndex].head->tuple) == 0)
+    if(hashTable[hashIndex].head && nstek_compareSession(tuple, hashTable[hashIndex].head->tuple) == 0)
         while(hashTable[hashIndex].head)
             hashIndex = hashIndex + 1 % BUCKET_SIZE;
     // If it is the same session, chaining is done.
@@ -143,7 +143,7 @@ nstek_createBucket(struct Tuples tuple, struct Traffics traffic){
 
 static void
 nstek_removeSession(struct Tuples tuple){
-    uint32_t hashIndex = hashSession(tuple);
+    uint32_t hashIndex = nstek_hashSession(tuple);
     
     int flg = 0;
     
@@ -154,7 +154,7 @@ nstek_removeSession(struct Tuples tuple){
     
     while (node)
     {
-        if (hashSession(node->tuple) == hashIndex){
+        if (nstek_hashSession(node->tuple) == hashIndex){
             
             if (node == hashTable[hashIndex].head){
                 hashTable[hashIndex].head = node->next;
@@ -174,12 +174,12 @@ nstek_removeSession(struct Tuples tuple){
 
 static uint32_t
 nstek_searchSession(struct Tuples tuple){
-    uint32_t hashIndex = hashSession(tuple);
+    uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
     int flg = 0;
     while (node)
     {
-        if (hashSession(tuple) == hashIndex)
+        if (nstek_hashSession(tuple) == hashIndex)
             return hashIndex;
         node = node->next;
     }
@@ -214,7 +214,7 @@ nstek_print_stats(){
         {
             if(j == firstSession || j == secondSesion)
                 printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
-                    hashSession(iterator->tuple),
+                    nstek_hashSession(iterator->tuple),
 
                     (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
                     (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
