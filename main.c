@@ -152,7 +152,7 @@ nstek_removeSession(struct Tuples tuple){
     
     while (node)
     {
-        if (nstek_hashSession(node->tuple) == hashIndex){
+        if ((nstek_hashSession(node->tuple) == hashIndex)){
             
             if (node == hashTable[hashIndex].head){
                 hashTable[hashIndex].head = node->next;
@@ -173,7 +173,7 @@ static uint32_t
 nstek_searchSession(struct Tuples tuple){
     uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
-	
+
     while (node)
     {
         if (nstek_hashSession(tuple) == hashIndex)
