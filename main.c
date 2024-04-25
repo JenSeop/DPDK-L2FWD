@@ -271,7 +271,7 @@ l2fwd_main_loop(void)
 					/* do this only on main core */
 					if (lcore_id == rte_get_main_lcore()) {
 						print_stats();
-						nstek_print_stats();
+						nstek_display();
 						/* reset the timer */
 						timer_tsc = 0;
 					}
