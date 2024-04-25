@@ -292,7 +292,7 @@ nstek_display(void)
             printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n",
 				idx,
 				hashTable[idx].traffic.tx,
-				hashTable[idx].traffic.rx,
+				hashTable[idx].traffic.rx
 			);
         }
 
