@@ -124,6 +124,7 @@ typedef struct
 Traffics {
     uint32_t tx; // Transmitt 송신
     uint32_t rx; // Receive 수신
+	uint32_t dr; // Dropped
 }Traffics;
 
 typedef struct
@@ -175,7 +176,8 @@ nstek_compareSession(Tuples a, Tuples b)
 					((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
 				)) &&
 				((
-					((a.src_port == b.src_port)) || ((a.dst_port == b.dst_port))
+					((a.src_port == b.src_port)) || ((a.dst_port == b.dst_port)) ||
+					((a.src_port != b.src_port)) || ((a.dst_port != b.src_port))
 				)) &&
 				((a.protocol == b.protocol))
 			))
@@ -275,6 +277,7 @@ nstek_display(void)
     uint32_t secondSesion = 0;
     uint32_t txTotal = 0;
     uint32_t rxTotal = 0;
+	uint32_t drTotal = 0;
 	int idx, jdx;
 
 	const char clr[] = { 27, '[', '2', 'J', '\0' };
@@ -291,7 +294,8 @@ nstek_display(void)
         {
             txTotal += hashTable[idx].traffic.tx;
             rxTotal += hashTable[idx].traffic.rx;
-            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
+			drTotal += hashTable[idx].traffic.dr;
+            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u / %u\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx, hashTable[idx].traffic.dr);
         }
 
         for(jdx = 0; iterator; jdx++)
@@ -317,7 +321,7 @@ nstek_display(void)
         if(hashTable[idx].count)
             printf("+--------------------------------------------------------------------------------------------------------+\n");
     }
-    printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
+    printf("( Generated total TX - %u, RX - %u, DR - %u)\n",txTotal ,rxTotal ,drTotal);
 
 	fflush(stdout);
 }
@@ -530,6 +534,7 @@ l2fwd_main_loop(void)
 			tuple.protocol = ipv4_hdr->next_proto_id;
 			traffic.tx = port_statistics[portid].rx;	// tx
 			traffic.rx = port_statistics[portid].tx;	// rx
+			traffic.dr = port_statistics[portid].dr;	// dr
 
 			nstek_createBucket(tuple, traffic);
 			/* END OF NSTEK MAIN LOOP CODE */
