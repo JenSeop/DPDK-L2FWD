@@ -119,6 +119,7 @@ static uint64_t timer_period = 10; /* default period is 10 seconds */
 /* START OF NSTEK DEFINITION */
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
+int initializeFlag = 0;
 
 typedef struct
 Traffics {
@@ -209,11 +210,15 @@ nstek_createBucket(Tuples tuple, Traffics traffic)
             hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
     // If it is the same session, chaining is done.
 
-    if (hashTable[hashIndex].count == 0 && !nstek_compareSession(tuple, hashTable[hashIndex].head->tuple)){
+    if (hashTable[hashIndex].count == 0 &&
+		initializeFlag ? 1 : !nstek_compareSession(tuple, hashTable[hashIndex].head->tuple))
+	{
+		initializeFlag = 0;
         hashTable[hashIndex].count = 1;
         hashTable[hashIndex].head = newNode;
     }
-    else{
+    else
+	{
         newNode->next = hashTable[hashIndex].head;
         hashTable[hashIndex].head = newNode;
         hashTable[hashIndex].count++;
