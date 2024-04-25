@@ -154,7 +154,7 @@ nstek_removeSession(struct Tuples tuple){
     {
         if ((nstek_hashSession(node->tuple) == hashIndex)){
             
-            if (node == hashTable[hashIndex].head){
+            if (node){
                 hashTable[hashIndex].head = node->next;
             }
             else{
@@ -176,7 +176,7 @@ nstek_searchSession(struct Tuples tuple){
 
     while (node)
     {
-        if (nstek_hashSession(tuple) == hashIndex)
+        if ((nstek_hashSession(tuple) == hashIndex))
             return hashIndex;
         node = node->next;
     }
@@ -209,7 +209,7 @@ nstek_print_stats(){
 
         for(int j = 0; iterator; j++)
         {
-            if(j == firstSession || j == secondSesion)
+            if(((j == firstSession) || (j == secondSesion)))
                 printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
                     nstek_hashSession(iterator->tuple),
 
