@@ -188,17 +188,17 @@ static uint32_t
 nstek_findEqaulSession(Tuples tuple)
 {
 	struct Node* node;
+	int idx;
 
-	while(hashTable)
+	for(idx = 0; idx < NSTEK_BUCKET_SIZE; idx++)
 	{
-		node = hashTable.head;
+		node = hashTable[idx].head;
 		while(node)
 		{
-			if(nstek_compareSession(tuple, hashTable.head->tuple))
-				return nstek_hashSession(hashTable.head->tuple);
+			if(nstek_compareSession(tuple, hashTable[idx].head->tuple))
+				return nstek_hashSession(hashTable[idx].head->tuple);
 			node = node->next;
 		}
-		hashTable++;
 	}
 
 	return 0;
