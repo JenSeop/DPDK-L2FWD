@@ -526,7 +526,6 @@ l2fwd_main_loop(void)
 			tuple.protocol = ipv4_hdr->next_proto_id;		// protocol
 			traffic.tx = port_statistics[portid].rx;		// tx
 			traffic.rx = port_statistics[portid].tx;		// rx
-			traffic.dr = port_statistics[portid].dropped;	// dr
 
 			nstek_createBucket(tuple, traffic);
 			/* END OF NSTEK MAIN LOOP CODE */
