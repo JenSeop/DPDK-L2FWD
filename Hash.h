@@ -33,18 +33,18 @@ struct Bucket{
 
 struct Bucket* hashTable; 
 
-uint32_t nstek_hashSession(struct Tuples tuple);
+static uint32_t nstek_hashSession(struct Tuples tuple);
 
-int nstek_compareSession(struct Tuples a, struct Tuples b);
+static int nstek_compareSession(struct Tuples a, struct Tuples b);
 
-struct Node* nstek_createNode(struct Tuples tuple);
+static struct Node* nstek_createNode(struct Tuples tuple);
 
-void nstek_createBucket(struct Tuples tuple, struct Traffics traffic);
+static void nstek_createBucket(struct Tuples tuple, struct Traffics traffic);
 
-void nstek_removeSession(struct Tuples tuple);
+static void nstek_removeSession(struct Tuples tuple);
 
-uint32_t nstek_searchSession(struct Tuples tuple);
+static uint32_t nstek_searchSession(struct Tuples tuple);
 
-void nstek_display();
+static void nstek_display();
 
 #endif

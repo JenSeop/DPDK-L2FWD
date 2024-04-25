@@ -60,7 +60,8 @@ int compareSession(struct Tuples a, struct Tuples b)
         );
 }
 
-struct Node* createNode(struct Tuples tuple){
+struct Node* createNode(struct Tuples tuple)
+{
     struct Node* newNode;
 
     newNode = (struct Node *)malloc(sizeof(struct Node));
@@ -71,7 +72,8 @@ struct Node* createNode(struct Tuples tuple){
     return newNode;
 }
 
-void createBucket(struct Tuples tuple, struct Traffics traffic){
+void createBucket(struct Tuples tuple, struct Traffics traffic)
+{
     uint32_t hashIndex = hashSession(tuple);
     struct Node* newNode = createNode(tuple);
 
@@ -96,7 +98,8 @@ void createBucket(struct Tuples tuple, struct Traffics traffic){
     hashTable[hashIndex].traffic.rx += traffic.rx;
 }
 
-void removeSession(struct Tuples tuple){
+void removeSession(struct Tuples tuple)
+{
     uint32_t hashIndex = hashSession(tuple);
     
     int flg = 0;
@@ -126,7 +129,8 @@ void removeSession(struct Tuples tuple){
     }
 }
 
-uint32_t searchSession(struct Tuples tuple){
+uint32_t searchSession(struct Tuples tuple)
+{
     uint32_t hashIndex = hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
     int flg = 0;
@@ -140,7 +144,8 @@ uint32_t searchSession(struct Tuples tuple){
     return 0;
 }
 
-void display(){
+void display()
+{
     struct Node* iterator;
     uint32_t firstSession = 0;
     uint32_t secondSesion = 0;
