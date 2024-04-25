@@ -337,9 +337,10 @@ nstek_display(void)
                     (iterator->tuple.dst_ip>>16) & 0XFF,(iterator->tuple.dst_ip>>24) & 0XFF,
 
                     NSTEK_REV_ENDIAN(iterator->tuple.src_port),NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
+					
                     ((iterator->tuple.protocol) == 1) ? "ICMP" : ((iterator->tuple.protocol) == 2) ? "IGMP" :
 					((iterator->tuple.protocol) == 6) ? "TCP" : ((iterator->tuple.protocol) == 17) ? "UDP" :
-					((iterator->tuple.protocol) == 114) ? "Any 0-hop" : "N/A"
+					((iterator->tuple.protocol) == 114) ? "Any 0-hop" : "N/A",
 
 					hashTable[idx].traffic.tx,
 					hashTable[idx].traffic.rx,
