@@ -41,6 +41,7 @@
 
 #include <rte_ip.h>
 #include <rte_tcp.h>
+#include <windows.h>
 
 static volatile bool force_quit;
 
@@ -272,9 +273,7 @@ nstek_display(void)
     uint32_t txTotal = 0;
     uint32_t rxTotal = 0;
 	int idx, jdx;
-    
-    printf("\n+--------------------------------------------------------------------------------------------------------+\n");
-    printf("Session\tIP(Src/Dst)\t\t\tPort(Src/Dst)\t\tProtocol\tBytes(TX/RX)");
+
     printf("\n+--------------------------------------------------------------------------------------------------------+\n");
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
@@ -312,6 +311,7 @@ nstek_display(void)
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 
 	fflush(stdout);
+	system("cls");
 }
 /* END OF NSTEK DEFINITION */
 
