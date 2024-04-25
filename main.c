@@ -41,7 +41,6 @@
 
 #include <rte_ip.h>
 #include <rte_tcp.h>
-#include <rte_byteordr.h>
 
 static volatile bool force_quit;
 
@@ -510,11 +509,8 @@ l2fwd_main_loop(void)
 			eth_hdr = rte_pktmbuf_mtod(m, struct rte_ether_hdr *);
 			ipv4_src = (uint8_t *) eth_hdr + sizeof(rte_ehter_hdr);
 
-			if (eth_hdr->ether_type == rte_cpu_to_be16(RTE_ETHER_TYPE_IPV4))
-			{
-				ipv4_hdr = (struct rte_ipv4_hdr *)ipv4_src;
-				tcp_hdr = (struct tcp_hdr *)((unsigned char *)ipv4_hdr + sizeof(struct rte_ipv4_hdr));
-			}
+			ipv4_hdr = (struct rte_ipv4_hdr *)ipv4_src;
+			tcp_hdr = (struct tcp_hdr *)((unsigned char *)ipv4_hdr + sizeof(struct rte_ipv4_hdr));
 
 			tuple.src_ip = ipv4_hdr->src_addr;
 			tuple.dst_ip = ipv4_hdr->dst_addr;
