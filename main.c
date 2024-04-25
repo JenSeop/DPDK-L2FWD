@@ -116,6 +116,43 @@ struct l2fwd_port_statistics port_statistics[RTE_MAX_ETHPORTS];
 /* A tsc-based timer responsible for triggering statistics printout */
 static uint64_t timer_period = 10; /* default period is 10 seconds */
 
+
+//
+#define NSTEK_BUCKET_SIZE 10007
+#define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
+
+typedef struct
+Traffics {
+    uint32_t tx; // Transmitt 송신
+    uint32_t rx; // Receive 수신
+}Traffics;
+
+typedef struct
+Tuples {
+    uint32_t src_ip;
+    uint32_t dst_ip;
+    uint16_t src_port;
+    uint16_t dst_port;
+    uint8_t protocol;
+}Tuples;
+
+typedef struct
+Node {
+    struct Tuples tuple;
+    struct Node* next;
+}Node;
+
+typedef struct
+Bucket{
+    struct Node* head;
+    struct Traffics traffic;
+    int count;
+}Bucket;
+
+Bucket* hashTable; 
+//
+
+
 /* Print out statistics on packets dropped */
 static void
 print_stats(void)
@@ -683,19 +720,19 @@ typedef struct Bucket{
 
 Bucket* hashTable; 
 
-uint32_t nstek_hashSession(struct Tuples tuple);
+uint32_t nstek_hashSession(Tuples);
 
-int nstek_compareSession(struct Tuples a, struct Tuples b);
+int nstek_compareSession(Tuples, Tuples);
 
-struct Node* nstek_createNode(struct Tuples tuple);
+struct Node* nstek_createNode(Tuples);
 
-void nstek_createBucket(struct Tuples tuple, struct Traffics traffic);
+void nstek_createBucket(Tuples, Traffics);
 
-void nstek_removeSession(struct Tuples tuple);
+void nstek_removeSession(Tuples);
 
-uint32_t nstek_searchSession(struct Tuples tuple);
+uint32_t nstek_searchSession(Tuples);
 
-void nstek_display(void);
+void nstek_display();
 
 //
 
@@ -983,40 +1020,6 @@ main(int argc, char **argv)
 
 	return ret;
 }
-
-//
-#define NSTEK_BUCKET_SIZE 10007
-#define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
-
-typedef struct
-Traffics {
-    uint32_t tx; // Transmitt 송신
-    uint32_t rx; // Receive 수신
-}Traffics;
-
-typedef struct
-Tuples {
-    uint32_t src_ip;
-    uint32_t dst_ip;
-    uint16_t src_port;
-    uint16_t dst_port;
-    uint8_t protocol;
-}Tuples;
-
-typedef struct
-Node {
-    struct Tuples tuple;
-    struct Node* next;
-}Node;
-
-typedef struct
-Bucket{
-    struct Node* head;
-    struct Traffics traffic;
-    int count;
-}Bucket;
-
-Bucket* hashTable; 
 
 static void
 nstek_headerTest(void)
