@@ -121,6 +121,8 @@ static uint64_t timer_period = 10; /* default period is 10 seconds */
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
 
+Bucket* hashTable; 
+
 typedef struct
 Traffics {
     uint32_t tx; // Transmitt 송신
@@ -691,10 +693,6 @@ signal_handler(int signum)
 
 //
 
-Bucket* hashTable; 
-
-static void
-nstek_headerTest(void);
 
 /*
 static uint32_t
@@ -717,6 +715,176 @@ nstek_searchSession(Tuples);
 
 static void
 nstek_display(void);
+*/
+
+static void
+nstek_headerTest(void)
+{
+    printf("Hello NSTEK\n");
+}
+/*
+static uint32_t
+nstek_hashSession(Tuples tuple)
+{
+    uint32_t hash = 5381;
+    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<24) ^ (tuple.dst_ip<<24);
+    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<16) ^ (tuple.dst_ip<<16);
+    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<8) ^ (tuple.dst_ip<<8);
+    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<0) ^ (tuple.dst_ip<<0);
+    hash = ((hash << 5) + hash) ^ (tuple.src_port) ^ (tuple.protocol);
+    hash = ((hash << 5) + hash) ^ (tuple.dst_port) ^ (tuple.protocol);
+
+    return hash % NSTEK_BUCKET_SIZE;
+}
+
+static int
+nstek_compareSession(Tuples a, Tuples b)
+{
+    return ((
+            ((
+                ((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
+                ((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
+            )) &&
+            ((a.src_port == b.src_port)) &&
+            ((a.dst_port == b.dst_port)) &&
+            ((a.protocol == b.protocol))
+        ));
+}
+
+static struct
+Node* nstek_createNode(Tuples tuple)
+{
+    struct Node* newNode;
+
+    newNode = (struct Node *)malloc(sizeof(struct Node));
+
+    newNode->tuple = tuple;
+    newNode->next = NULL;
+
+    return newNode;
+}
+
+static void
+nstek_createBucket(Tuples tuple, Traffics traffic)
+{
+    uint32_t hashIndex = nstek_hashSession(tuple);
+    struct Node* newNode = nstek_createNode(tuple);
+
+    // Open addressing for other sessions
+    if(hashTable[hashIndex].head && nstek_compareSession(tuple, hashTable[hashIndex].head->tuple) == 0)
+        while(hashTable[hashIndex].head)
+            hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
+    // If it is the same session, chaining is done.
+
+    if (hashTable[hashIndex].count == 0){
+        hashTable[hashIndex].count = 1;
+        hashTable[hashIndex].head = newNode;
+    }
+    else{
+        newNode->next = hashTable[hashIndex].head;
+        hashTable[hashIndex].head = newNode;
+        hashTable[hashIndex].count++;
+    }
+
+    // tx, rx calculater
+    hashTable[hashIndex].traffic.tx += traffic.tx;
+    hashTable[hashIndex].traffic.rx += traffic.rx;
+}
+
+static void
+nstek_removeSession(Tuples tuple)
+{
+    uint32_t hashIndex = nstek_hashSession(tuple);
+    
+    struct Node* node;
+    struct Node* before;
+    
+    node = hashTable[hashIndex].head;
+    
+    while (node)
+    {
+        if (nstek_hashSession(node->tuple) == hashIndex){
+            
+            if (node == hashTable[hashIndex].head){
+                hashTable[hashIndex].head = node->next;
+            }
+            else{
+                before->next = node->next;
+            }
+            
+            hashTable[hashIndex].count--;
+            free(node);
+        }
+        before = node;
+        node = node->next;
+    }
+}
+
+static uint32_t
+nstek_searchSession(Tuples tuple)
+{
+    uint32_t hashIndex = nstek_hashSession(tuple);
+    struct Node* node = hashTable[hashIndex].head;
+
+    while (node)
+    {
+        if (nstek_hashSession(tuple) == hashIndex)
+            return hashIndex;
+        node = node->next;
+    }
+    
+    return 0;
+}
+
+static void
+nstek_display(void)
+{
+    struct Node* iterator;
+    //uint32_t firstSession = 0;
+    //uint32_t secondSesion = 0;
+    uint32_t txTotal = 0;
+    uint32_t rxTotal = 0;
+	int idx, jdx;
+    
+    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+    printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
+    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+    
+    for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
+        iterator = hashTable[idx].head;
+        //secondSesion = hashTable[i].count - 1;
+
+        if(hashTable[idx].count)
+        {
+            txTotal += hashTable[idx].traffic.tx;
+            rxTotal += hashTable[idx].traffic.rx;
+            printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
+        }
+
+        for(jdx = 0; iterator; jdx++)
+        {
+            //if(j == firstSession || j == secondSesion)
+                printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
+                    //nstek_hashSession(iterator->tuple),
+
+                    (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
+                    (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
+
+                    (iterator->tuple.dst_ip>>24) & 0XFF,(iterator->tuple.dst_ip>>16) & 0XFF,
+                    (iterator->tuple.dst_ip>>8) & 0XFF,(iterator->tuple.dst_ip>>0) & 0XFF,
+
+                    NSTEK_REV_ENDIAN(iterator->tuple.src_port),NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
+                    iterator->tuple.protocol
+                );
+            iterator = iterator->next;
+        }
+
+        if(hashTable[idx].count)
+            printf("+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+    }
+    printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
+}
+
 */
 
 int
@@ -1003,172 +1171,6 @@ main(int argc, char **argv)
 
 	return ret;
 }
-
-static void
-nstek_headerTest(void)
-{
-    printf("Hello NSTEK\n");
-}
 /*
-static uint32_t
-nstek_hashSession(Tuples tuple)
-{
-    uint32_t hash = 5381;
-    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<24) ^ (tuple.dst_ip<<24);
-    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<16) ^ (tuple.dst_ip<<16);
-    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<8) ^ (tuple.dst_ip<<8);
-    hash = ((hash << 5) + hash) ^ (tuple.src_ip<<0) ^ (tuple.dst_ip<<0);
-    hash = ((hash << 5) + hash) ^ (tuple.src_port) ^ (tuple.protocol);
-    hash = ((hash << 5) + hash) ^ (tuple.dst_port) ^ (tuple.protocol);
 
-    return hash % NSTEK_BUCKET_SIZE;
-}
-
-static int
-nstek_compareSession(Tuples a, Tuples b)
-{
-    return ((
-            ((
-                ((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
-                ((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
-            )) &&
-            ((a.src_port == b.src_port)) &&
-            ((a.dst_port == b.dst_port)) &&
-            ((a.protocol == b.protocol))
-        ));
-}
-
-static struct
-Node* nstek_createNode(Tuples tuple)
-{
-    struct Node* newNode;
-
-    newNode = (struct Node *)malloc(sizeof(struct Node));
-
-    newNode->tuple = tuple;
-    newNode->next = NULL;
-
-    return newNode;
-}
-
-static void
-nstek_createBucket(Tuples tuple, Traffics traffic)
-{
-    uint32_t hashIndex = nstek_hashSession(tuple);
-    struct Node* newNode = nstek_createNode(tuple);
-
-    // Open addressing for other sessions
-    if(hashTable[hashIndex].head && nstek_compareSession(tuple, hashTable[hashIndex].head->tuple) == 0)
-        while(hashTable[hashIndex].head)
-            hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
-    // If it is the same session, chaining is done.
-
-    if (hashTable[hashIndex].count == 0){
-        hashTable[hashIndex].count = 1;
-        hashTable[hashIndex].head = newNode;
-    }
-    else{
-        newNode->next = hashTable[hashIndex].head;
-        hashTable[hashIndex].head = newNode;
-        hashTable[hashIndex].count++;
-    }
-
-    // tx, rx calculater
-    hashTable[hashIndex].traffic.tx += traffic.tx;
-    hashTable[hashIndex].traffic.rx += traffic.rx;
-}
-
-static void
-nstek_removeSession(Tuples tuple)
-{
-    uint32_t hashIndex = nstek_hashSession(tuple);
-    
-    struct Node* node;
-    struct Node* before;
-    
-    node = hashTable[hashIndex].head;
-    
-    while (node)
-    {
-        if (nstek_hashSession(node->tuple) == hashIndex){
-            
-            if (node == hashTable[hashIndex].head){
-                hashTable[hashIndex].head = node->next;
-            }
-            else{
-                before->next = node->next;
-            }
-            
-            hashTable[hashIndex].count--;
-            free(node);
-        }
-        before = node;
-        node = node->next;
-    }
-}
-
-static uint32_t
-nstek_searchSession(Tuples tuple)
-{
-    uint32_t hashIndex = nstek_hashSession(tuple);
-    struct Node* node = hashTable[hashIndex].head;
-
-    while (node)
-    {
-        if (nstek_hashSession(tuple) == hashIndex)
-            return hashIndex;
-        node = node->next;
-    }
-    
-    return 0;
-}
-
-static void
-nstek_display(void)
-{
-    struct Node* iterator;
-    //uint32_t firstSession = 0;
-    //uint32_t secondSesion = 0;
-    uint32_t txTotal = 0;
-    uint32_t rxTotal = 0;
-	int idx, jdx;
-    
-    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
-    printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
-    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
-    
-    for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
-        iterator = hashTable[idx].head;
-        //secondSesion = hashTable[i].count - 1;
-
-        if(hashTable[idx].count)
-        {
-            txTotal += hashTable[idx].traffic.tx;
-            rxTotal += hashTable[idx].traffic.rx;
-            printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
-        }
-
-        for(jdx = 0; iterator; jdx++)
-        {
-            //if(j == firstSession || j == secondSesion)
-                printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
-                    //nstek_hashSession(iterator->tuple),
-
-                    (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
-                    (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
-
-                    (iterator->tuple.dst_ip>>24) & 0XFF,(iterator->tuple.dst_ip>>16) & 0XFF,
-                    (iterator->tuple.dst_ip>>8) & 0XFF,(iterator->tuple.dst_ip>>0) & 0XFF,
-
-                    NSTEK_REV_ENDIAN(iterator->tuple.src_port),NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
-                    iterator->tuple.protocol
-                );
-            iterator = iterator->next;
-        }
-
-        if(hashTable[idx].count)
-            printf("+---------------------------------------------------------------------------------------------------------------------------------------+\n");
-    }
-    printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
-}
 */
