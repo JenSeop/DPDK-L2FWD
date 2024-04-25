@@ -41,7 +41,6 @@
 
 #include <rte_ip.h>
 #include <rte_tcp.h>
-#include <windows.h>
 
 static volatile bool force_quit;
 
@@ -274,6 +273,10 @@ nstek_display(void)
     uint32_t rxTotal = 0;
 	int idx, jdx;
 
+	const char clr[] = { 27, '[', '2', 'J', '\0' };
+	const char topLeft[] = { 27, '[', '1', ';', '1', 'H','\0' };
+
+	printf("%s%s", clr, topLeft);
     printf("\n+--------------------------------------------------------------------------------------------------------+\n");
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
@@ -311,7 +314,6 @@ nstek_display(void)
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 
 	fflush(stdout);
-	system("cls");
 }
 /* END OF NSTEK DEFINITION */
 
