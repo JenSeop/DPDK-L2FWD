@@ -1134,7 +1134,7 @@ nstek_display(void)
     printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     
-    for (idx = 1; i<NSTEK_BUCKET_SIZE; idx++){
+    for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
         iterator = hashTable[i].head;
         //secondSesion = hashTable[i].count - 1;
 
@@ -1145,7 +1145,7 @@ nstek_display(void)
             printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", i, hashTable[i].traffic.tx, hashTable[i].traffic.rx);
         }
 
-        for(int jdx = 0; iterator; jdx++)
+        for(jdx = 0; iterator; jdx++)
         {
             //if(j == firstSession || j == secondSesion)
                 printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
