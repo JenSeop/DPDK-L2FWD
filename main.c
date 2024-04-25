@@ -691,48 +691,28 @@ signal_handler(int signum)
 
 //
 
-#define NSTEK_BUCKET_SIZE 10007
-#define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
-
-typedef struct Traffics {
-    uint32_t tx; // Transmitt 송신
-    uint32_t rx; // Receive 수신
-}Traffics;
-
-typedef struct Tuples {
-    uint32_t src_ip;
-    uint32_t dst_ip;
-    uint16_t src_port;
-    uint16_t dst_port;
-    uint8_t protocol;
-}Tuples;
-
-typedef struct Node {
-    struct Tuples tuple;
-    struct Node* next;
-}Node;
-
-typedef struct Bucket{
-    struct Node* head;
-    struct Traffics traffic;
-    int count;
-}Bucket;
-
 Bucket* hashTable; 
 
-uint32_t nstek_hashSession(Tuples);
+static uint32_t
+nstek_hashSession(Tuples);
 
-int nstek_compareSession(Tuples, Tuples);
+static int
+nstek_compareSession(Tuples, Tuples);
 
-struct Node* nstek_createNode(Tuples);
+static struct
+Node* nstek_createNode(Tuples);
 
-void nstek_createBucket(Tuples, Traffics);
+static void
+nstek_createBucket(Tuples, Traffics);
 
-void nstek_removeSession(Tuples);
+static void
+nstek_removeSession(Tuples);
 
-uint32_t nstek_searchSession(Tuples);
+static uint32_t
+nstek_searchSession(Tuples);
 
-void nstek_display();
+static void
+nstek_display(void);
 
 //
 
@@ -1055,7 +1035,8 @@ nstek_compareSession(Tuples a, Tuples b)
         ));
 }
 
-struct Node* nstek_createNode(Tuples tuple)
+static struct
+Node* nstek_createNode(Tuples tuple)
 {
     struct Node* newNode;
 
@@ -1067,7 +1048,8 @@ struct Node* nstek_createNode(Tuples tuple)
     return newNode;
 }
 
-void nstek_createBucket(Tuples tuple, Traffics traffic)
+static void
+nstek_createBucket(Tuples tuple, Traffics traffic)
 {
     uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* newNode = nstek_createNode(tuple);
@@ -1093,7 +1075,8 @@ void nstek_createBucket(Tuples tuple, Traffics traffic)
     hashTable[hashIndex].traffic.rx += traffic.rx;
 }
 
-void nstek_removeSession(Tuples tuple)
+static void
+nstek_removeSession(Tuples tuple)
 {
     uint32_t hashIndex = nstek_hashSession(tuple);
     
@@ -1124,7 +1107,8 @@ void nstek_removeSession(Tuples tuple)
     }
 }
 
-uint32_t nstek_searchSession(Tuples tuple)
+static uint32_t
+nstek_searchSession(Tuples tuple)
 {
     uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
@@ -1139,7 +1123,8 @@ uint32_t nstek_searchSession(Tuples tuple)
     return 0;
 }
 
-void nstek_display(void)
+static void
+nstek_display(void)
 {
     struct Node* iterator;
     uint32_t firstSession = 0;
