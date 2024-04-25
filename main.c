@@ -1109,7 +1109,7 @@ nstek_searchSession(Tuples tuple)
 {
     uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
-	
+
     while (node)
     {
         if (nstek_hashSession(tuple) == hashIndex)
@@ -1124,18 +1124,19 @@ static void
 nstek_display(void)
 {
     struct Node* iterator;
-    uint32_t firstSession = 0;
-    uint32_t secondSesion = 0;
+    //uint32_t firstSession = 0;
+    //uint32_t secondSesion = 0;
     uint32_t txTotal = 0;
     uint32_t rxTotal = 0;
+	int idx, jdx;
     
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     
-    for (int i = 1; i<NSTEK_BUCKET_SIZE; i++){
+    for (idx = 1; i<NSTEK_BUCKET_SIZE; idx++){
         iterator = hashTable[i].head;
-        secondSesion = hashTable[i].count - 1;
+        //secondSesion = hashTable[i].count - 1;
 
         if(hashTable[i].count)
         {
@@ -1144,11 +1145,11 @@ nstek_display(void)
             printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", i, hashTable[i].traffic.tx, hashTable[i].traffic.rx);
         }
 
-        for(int j = 0; iterator; j++)
+        for(int jdx = 0; iterator; jdx++)
         {
             //if(j == firstSession || j == secondSesion)
                 printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
-                    nstek_hashSession(iterator->tuple),
+                    //nstek_hashSession(iterator->tuple),
 
                     (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
                     (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
