@@ -103,7 +103,7 @@ nstek_compareSession(struct Tuples a, struct Tuples b)
         );
 }
 
-struct Node*
+static struct Node*
 nstek_createNode(struct Tuples tuple){
     struct Node* newNode;
 

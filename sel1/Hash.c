@@ -163,7 +163,7 @@ void display(){
 
         for(int j = 0; iterator; j++)
         {
-            if(j == firstSession || j == secondSesion)
+            //if(j == firstSession || j == secondSesion)
                 printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
                     hashSession(iterator->tuple),
 
@@ -190,30 +190,30 @@ int main(){
     struct Traffics traffic = {400, 400};
 
     for (int i=0; i < pkt; i++){
-        struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
+        struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 5376, 20480, 6 + (i/10)};
         //struct Tuples tuple = { 3232235777, 2886794753, 53764, 20480, 6};
         createBucket(tuple, traffic);
     }
     // eq session 01
     for (int i=0; i < 5; i++){
         //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 3232235777, 2886794753, 53764, 20480, 6};
+        struct Tuples tuple = { 3232235777, 2886794753, 5376, 20480, 6};
         createBucket(tuple, traffic);
     }
     for (int i=0; i < 5; i++){
         //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 2886794753, 3232235777, 53764, 20480, 6};
+        struct Tuples tuple = { 2886794753, 3232235777, 5376, 20480, 6};
         createBucket(tuple, traffic);
     }
     // eq session 02
     for (int i=0; i < 5; i++){
         //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 3232235786, 2886794753, 53764, 20480, 6};
+        struct Tuples tuple = { 3232235786, 2886794753, 5376, 20480, 6};
         createBucket(tuple, traffic);
     }
     for (int i=0; i < 5; i++){
         //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 2886794753, 3232235786, 53764, 20480, 6};
+        struct Tuples tuple = { 2886794753, 3232235786, 5376, 20480, 6};
         createBucket(tuple, traffic);
     }
 
