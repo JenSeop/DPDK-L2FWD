@@ -273,9 +273,9 @@ nstek_display(void)
     uint32_t rxTotal = 0;
 	int idx, jdx;
     
-    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
-    printf("| Session\tSource IP\tDestination IP\t\tPort(Src/Dst)\tProtocol\tTX\tRX\t|");
-    printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+    printf("\n+---------------------------------------------------------------------------------------------------------+\n");
+    printf("| Session\tIP(Src/Dst)\t\tPort(Src/Dst)\tProtocol\tBytes(TX/RX)\t|");
+    printf("\n+---------------------------------------------------------------------------------------------------------+\n");
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
         iterator = hashTable[idx].head;
@@ -291,7 +291,7 @@ nstek_display(void)
         for(jdx = 0; iterator; jdx++)
         {
             if((((jdx == firstSession)) || ((jdx == secondSesion))))
-                printf("|\t\t%d.%d.%d.%d\t%d.%d.%d.%d\t\t%u / %u\t\t\t%u\t\t\t\t|\n",
+                printf("|\t\t%d.%d.%d.%d\t%d.%d.%d.%d\t\t%u / %u\t%u\t\t\t\t|\n",
                     //nstek_hashSession(iterator->tuple),
 
                     (iterator->tuple.src_ip>>0) & 0XFF,(iterator->tuple.src_ip>>8) & 0XFF,
@@ -307,7 +307,7 @@ nstek_display(void)
         }
 
         if(hashTable[idx].count)
-            printf("+---------------------------------------------------------------------------------------------------------------------------------------+\n");
+            printf("+---------------------------------------------------------------------------------------------------------+\n");
     }
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 
