@@ -279,7 +279,7 @@ nstek_display(void)
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
         iterator = hashTable[idx].head;
-        secondSesion = hashTable[i].count - 1;
+        secondSesion = hashTable[idx].count - 1;
 
         if(hashTable[idx].count)
         {
@@ -290,7 +290,7 @@ nstek_display(void)
 
         for(jdx = 0; iterator; jdx++)
         {
-            if(jdx == firstSession || jdx == secondSesion)
+            if((((jdx == firstSession)) || ((jdx == secondSesion))))
                 printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
                     //nstek_hashSession(iterator->tuple),
 
