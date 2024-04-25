@@ -693,6 +693,10 @@ signal_handler(int signum)
 
 Bucket* hashTable; 
 
+static void
+nstek_headerTest(void);
+
+/*
 static uint32_t
 nstek_hashSession(Tuples);
 
@@ -713,8 +717,7 @@ nstek_searchSession(Tuples);
 
 static void
 nstek_display(void);
-
-//
+*/
 
 int
 main(int argc, char **argv)
