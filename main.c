@@ -124,6 +124,7 @@ typedef struct
 Traffics {
     uint32_t tx; // Transmitt 송신
     uint32_t rx; // Receive 수신
+    uint32_t dr; // Dropped
 }Traffics;
 
 typedef struct
@@ -271,6 +272,7 @@ nstek_display(void)
     uint32_t secondSesion = 0;
     uint32_t txTotal = 0;
     uint32_t rxTotal = 0;
+    uint32_t drTotal = 0;
 	int idx, jdx;
 	int proto;
 
@@ -289,7 +291,13 @@ nstek_display(void)
         {
             txTotal += hashTable[idx].traffic.tx;
             rxTotal += hashTable[idx].traffic.rx;
-            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
+            rxTotal += hashTable[idx].traffic.dr;
+            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n",
+				idx,
+				hashTable[idx].traffic.tx,
+				hashTable[idx].traffic.rx,
+				hashTable[idx].traffic.dr
+			);
         }
 
         for(jdx = 0; session; jdx++)
@@ -315,7 +323,7 @@ nstek_display(void)
         if(hashTable[idx].count)
             printf("+--------------------------------------------------------------------------------------------------------+\n");
     }
-    printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
+    printf("( Generated total TX - %u, RX - %u, DR - %u )\n", txTotal, rxTotal, drTotal);
 
 	fflush(stdout);
 }
