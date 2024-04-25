@@ -45,6 +45,6 @@ void nstek_removeSession(struct Tuples tuple);
 
 uint32_t nstek_searchSession(struct Tuples tuple);
 
-void nstek_display(void);
+static void nstek_display(void);
 
 #endif
