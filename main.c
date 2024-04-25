@@ -328,7 +328,7 @@ l2fwd_main_loop(void)
 				continue;
 
 			port_statistics[portid].rx += nb_rx;
-			nstek_display();
+			nstek_headerTest(void);
 			
 			for (j = 0; j < nb_rx; j++) {
 				m = pkts_burst[j];
@@ -1006,7 +1006,7 @@ nstek_headerTest(void)
 {
     printf("Hello NSTEK\n");
 }
-
+/*
 static uint32_t
 nstek_hashSession(Tuples tuple)
 {
@@ -1168,4 +1168,4 @@ nstek_display(void)
     }
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 }
-//
+*/
