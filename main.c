@@ -317,7 +317,7 @@ nstek_display(void)
         if(hashTable[idx].count)
             printf("+--------------------------------------------------------------------------------------------------------+\n");
     }
-    printf("( Generated total TX - %u, RX - %u, DR - %u )\n", txTotal, rxTotal, drTotal);
+    printf("( Generated total TX - %u, RX - %u)\n", txTotal, rxTotal);
 
 	fflush(stdout);
 }
