@@ -119,7 +119,6 @@ static uint64_t timer_period = 10; /* default period is 10 seconds */
 /* START OF NSTEK DEFINITION */
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
-int initializeFlag = 0;
 
 typedef struct
 Traffics {
@@ -185,6 +184,26 @@ nstek_compareSession(Tuples a, Tuples b)
 		);
 }
 
+static uint32_t
+nstek_findEqaulSession(Tuples tuple)
+{
+	struct Node* node;
+
+	while(hashTable)
+	{
+		node = hashTable.head;
+		while(node)
+		{
+			if(nstek_compareSession(tuple, hashTable.head->tuple))
+				return nstek_hashSession(hashTable.head->tuple);
+			node = node->next;
+		}
+		hashTable++;
+	}
+
+	return 0;
+}
+
 static struct
 Node* nstek_createNode(Tuples tuple)
 {
@@ -201,24 +220,27 @@ Node* nstek_createNode(Tuples tuple)
 static void
 nstek_createBucket(Tuples tuple, Traffics traffic)
 {
-    uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* newNode = nstek_createNode(tuple);
-
-    // Open addressing for other sessions
-    if(hashTable[hashIndex].head && !nstek_compareSession(tuple, hashTable[hashIndex].head->tuple))
-        while(hashTable[hashIndex].head)
-            hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
+	uint32_t hashIndex = nstek_findEqaulSession(tuple);
+	
+	// Don't Exist Same Session
+	if(!hashIndex)
+	{
+		hashIndex = nstek_hashSession(tuple);
+		// Open addressing for other sessions
+		if(hashTable[hashIndex].head)
+		{
+			while(hashTable[hashIndex].head)
+				hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
+		}
+	}
     // If it is the same session, chaining is done.
 
-    if (hashTable[hashIndex].count == 0 &&
-		initializeFlag ? 1 : !nstek_compareSession(tuple, hashTable[hashIndex].head->tuple))
-	{
-		initializeFlag = 0;
+    if (hashTable[hashIndex].count == 0){
         hashTable[hashIndex].count = 1;
         hashTable[hashIndex].head = newNode;
     }
-    else
-	{
+    else{
         newNode->next = hashTable[hashIndex].head;
         hashTable[hashIndex].head = newNode;
         hashTable[hashIndex].count++;
