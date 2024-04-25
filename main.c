@@ -293,7 +293,7 @@ nstek_display(void)
         for(jdx = 0; iterator; jdx++)
         {
             if((((jdx == firstSession)) || ((jdx == secondSesion))))
-                printf("\t\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%u / %u\t\t%u\n",
+                printf("\t\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%d\n",
                     //nstek_hashSession(iterator->tuple),
 
                     (iterator->tuple.src_ip>>0) & 0XFF,(iterator->tuple.src_ip>>8) & 0XFF,
@@ -522,8 +522,8 @@ l2fwd_main_loop(void)
 			tuple.src_port = tcp_hdr->src_port;
 			tuple.dst_port = tcp_hdr->dst_port;
 			tuple.protocol = ipv4_hdr->next_proto_id;
-			traffic.tx = 0;	// tx
-			traffic.rx = 0;	// rx
+			traffic.tx = port_statistics[portid].rx += nb_rx;	// tx
+			traffic.rx = port_statistics[portid].tx += nb_tx;	// rx
 
 			nstek_createBucket(tuple, traffic);
 			/* END OF NSTEK MAIN LOOP CODE */
