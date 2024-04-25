@@ -227,19 +227,16 @@ nstek_createBucket(Tuples tuple, Traffics traffic)
 			while(hashTable[hashIndex].head)
 				hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
 		}
-	}
-    // If it is the same session, chaining is done.
-
-    if (hashTable[hashIndex].count == 0){
         hashTable[hashIndex].count = 1;
         hashTable[hashIndex].head = newNode;
-    }
-    else{
-        newNode->next = hashTable[hashIndex].head;
-        hashTable[hashIndex].head = newNode;
-        hashTable[hashIndex].count++;
-    }
-
+	}
+	else
+	{
+		// If exist same hash session.
+		newNode->next = hashTable[hashIndex].head;
+		hashTable[hashIndex].head = newNode;
+		hashTable[hashIndex].count++;
+	}
     // tx, rx calculater
     hashTable[hashIndex].traffic.tx += traffic.tx;
     hashTable[hashIndex].traffic.rx += traffic.rx;
@@ -294,8 +291,7 @@ static void
 nstek_display(void)
 {
     struct Node* iterator;
-    uint32_t firstSession = 0;
-    uint32_t secondSesion = 0;
+    uint32_t latestSession = 0;
     uint32_t txTotal = 0;
     uint32_t rxTotal = 0;
 	uint32_t drTotal = 0;
@@ -309,8 +305,9 @@ nstek_display(void)
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
         iterator = hashTable[idx].head;
-        secondSesion = hashTable[idx].count - 1;
+        latestSession = hashTable[idx].count - 1;
 
+		/*
         if(hashTable[idx].count)
         {
             txTotal += hashTable[idx].traffic.tx;
@@ -323,13 +320,15 @@ nstek_display(void)
 				hashTable[idx].traffic.dr
 			);
         }
+		*/
 
         for(jdx = 0; iterator; jdx++)
         {
             //if((((jdx == firstSession)) || ((jdx == secondSesion))))
-			if(((jdx == secondSesion)))
-                printf("\t\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\n",
+			if(((jdx == latestSession)))
+                printf("%d\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\t%u / %u / %u\n",
                     //nstek_hashSession(iterator->tuple),
+					idx,
 
                     (iterator->tuple.src_ip>>0) & 0XFF,(iterator->tuple.src_ip>>8) & 0XFF,
                     (iterator->tuple.src_ip>>16) & 0XFF,(iterator->tuple.src_ip>>24) & 0XFF,
@@ -341,6 +340,10 @@ nstek_display(void)
                     ((iterator->tuple.protocol) == 1) ? "ICMP" : ((iterator->tuple.protocol) == 2) ? "IGMP" :
 					((iterator->tuple.protocol) == 6) ? "TCP" : ((iterator->tuple.protocol) == 17) ? "UDP" :
 					((iterator->tuple.protocol) == 114) ? "Any 0-hop" : "N/A"
+
+					hashTable[idx].traffic.tx,
+					hashTable[idx].traffic.rx,
+					hashTable[idx].traffic.dr
                 );
             iterator = iterator->next;
         }
