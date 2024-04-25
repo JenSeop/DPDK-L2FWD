@@ -273,9 +273,9 @@ nstek_display(void)
     uint32_t rxTotal = 0;
 	int idx, jdx;
     
-    printf("\n+----------------------------------------------------------------------------------------+\n");
+    printf("\n+----------------------------------------------------------------------------------------------+\n");
     printf("| Session\tIP(Src/Dst)\t\t\tPort(Src/Dst)\t\tProtocol\tBytes(TX/RX)\t|");
-    printf("\n+----------------------------------------------------------------------------------------+\n");
+    printf("\n+----------------------------------------------------------------------------------------------+\n");
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
         iterator = hashTable[idx].head;
@@ -285,7 +285,7 @@ nstek_display(void)
         {
             txTotal += hashTable[idx].traffic.tx;
             rxTotal += hashTable[idx].traffic.rx;
-            printf("| %d\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
+            printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
         }
 
         for(jdx = 0; iterator; jdx++)
@@ -307,7 +307,7 @@ nstek_display(void)
         }
 
         if(hashTable[idx].count)
-            printf("+----------------------------------------------------------------------------------------+\n");
+            printf("+----------------------------------------------------------------------------------------------+\n");
     }
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 
