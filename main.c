@@ -174,12 +174,12 @@ nstek_compareSession(Tuples a, Tuples b)
 				((
 					((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
 					((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
-				)) &&
+				)) /*&&
 				((
-					((a.src_port == b.src_port)) || ((a.dst_port == b.dst_port)) ||
-					((a.src_port != b.src_port)) || ((a.dst_port != b.src_port))
+					((a.src_port == b.src_port)) && ((a.dst_port == b.dst_port)) ||
+					((a.src_port != b.src_port)) && ((a.dst_port != b.src_port))
 				)) &&
-				((a.protocol == b.protocol))
+				((a.protocol == b.protocol))*/
 			))
 		);
 }
@@ -295,7 +295,12 @@ nstek_display(void)
             txTotal += hashTable[idx].traffic.tx;
             rxTotal += hashTable[idx].traffic.rx;
 			drTotal += hashTable[idx].traffic.dr;
-            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u / %u\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx, hashTable[idx].traffic.dr);
+            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u / %u\n",
+				idx,
+				hashTable[idx].traffic.tx,
+				hashTable[idx].traffic.rx,
+				hashTable[idx].traffic.dr
+			);
         }
 
         for(jdx = 0; iterator; jdx++)
