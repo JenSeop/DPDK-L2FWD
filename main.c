@@ -167,15 +167,19 @@ nstek_hashSession(Tuples tuple)
 static int
 nstek_compareSession(Tuples a, Tuples b)
 {
-    return ((
-            ((
-                ((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
-                ((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
-            )) &&
-            ((a.src_port == b.src_port)) &&
-            ((a.dst_port == b.dst_port)) &&
-            ((a.protocol == b.protocol))
-        ));
+    return
+		(
+			((
+				((
+					((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
+					((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
+				)) &&
+				((
+					((a.src_port == b.src_port)) || ((a.dst_port == b.dst_port))
+				)) &&
+				((a.protocol == b.protocol))
+			))
+		);
 }
 
 static struct
