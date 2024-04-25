@@ -347,6 +347,7 @@ nstek_display(void)
 					hashTable[idx].traffic.dr
                 );
             iterator = iterator->next;
+			printf("%s%s", clr, topLeft);
         }
 
         if(hashTable[idx].count)
