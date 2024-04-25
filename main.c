@@ -204,12 +204,12 @@ nstek_createBucket(Tuples tuple, Traffics traffic)
     struct Node* newNode = nstek_createNode(tuple);
 
     // Open addressing for other sessions
-    if(hashTable[hashIndex].head && nstek_compareSession(tuple, hashTable[hashIndex].head->tuple) == 0)
+    if(hashTable[hashIndex].head && !nstek_compareSession(tuple, hashTable[hashIndex].head->tuple))
         while(hashTable[hashIndex].head)
             hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
     // If it is the same session, chaining is done.
 
-    if (hashTable[hashIndex].count == 0){
+    if (hashTable[hashIndex].count == 0 && !nstek_compareSession(uple, hashTable[hashIndex].head->tuple)){
         hashTable[hashIndex].count = 1;
         hashTable[hashIndex].head = newNode;
     }
