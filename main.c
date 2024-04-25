@@ -124,7 +124,6 @@ typedef struct
 Traffics {
     uint32_t tx; // Transmitt 송신
     uint32_t rx; // Receive 수신
-    uint32_t dr; // Dropped
 }Traffics;
 
 typedef struct
@@ -272,7 +271,6 @@ nstek_display(void)
     uint32_t secondSesion = 0;
     uint32_t txTotal = 0;
     uint32_t rxTotal = 0;
-    uint32_t drTotal = 0;
 	int idx, jdx;
 	int proto;
 
@@ -291,12 +289,10 @@ nstek_display(void)
         {
             txTotal += hashTable[idx].traffic.tx;
             rxTotal += hashTable[idx].traffic.rx;
-            rxTotal += hashTable[idx].traffic.dr;
             printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n",
 				idx,
 				hashTable[idx].traffic.tx,
 				hashTable[idx].traffic.rx,
-				hashTable[idx].traffic.dr
 			);
         }
 
@@ -313,9 +309,7 @@ nstek_display(void)
                     (session->tuple.dst_ip>>16) & 0XFF,(session->tuple.dst_ip>>24) & 0XFF,
 
                     NSTEK_REV_ENDIAN(session->tuple.src_port),NSTEK_REV_ENDIAN(session->tuple.dst_port),
-                    (proto == 1) ? "ICMP" : (proto == 2) ? "IGMP" : 
-					(proto == 6) ? "TCP" : (proto == 17) ? "UDP" : 
-					(proto == 114) ? "Any 0-hop" : "None"
+                    (proto == 1) ? "ICMP" :  (proto == 6) ? "TCP" : (proto == 17) ? "UDP" : (proto == 114) ? "Any 0-hop" : "None"
                 );
             session = session->next;
         }
@@ -536,7 +530,6 @@ l2fwd_main_loop(void)
 			tuple.protocol = ipv4_hdr->next_proto_id;		// protocol
 			traffic.tx = port_statistics[portid].rx;		// tx
 			traffic.rx = port_statistics[portid].tx;		// rx
-			traffic.dr = port_statistics[portid].dropped;	// dr
 
 			nstek_createBucket(tuple, traffic);
 			/* END OF NSTEK MAIN LOOP CODE */
