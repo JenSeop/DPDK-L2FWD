@@ -274,7 +274,7 @@ nstek_display(void)
 	int idx, jdx;
     
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
-    printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
+    printf("| Session\tSource IP\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
@@ -291,14 +291,14 @@ nstek_display(void)
         for(jdx = 0; iterator; jdx++)
         {
             if((((jdx == firstSession)) || ((jdx == secondSesion))))
-                printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
+                printf("|\t\t%d.%d.%d.%d\t%d.%d.%d.%d\t\t%u\t%u\t\t\t%u\t\t\t\t|\n",
                     //nstek_hashSession(iterator->tuple),
 
-                    (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
-                    (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
+                    (iterator->tuple.src_ip>>0) & 0XFF,(iterator->tuple.src_ip>>8) & 0XFF,
+                    (iterator->tuple.src_ip>>16) & 0XFF,(iterator->tuple.src_ip>>24) & 0XFF,
 
-                    (iterator->tuple.dst_ip>>24) & 0XFF,(iterator->tuple.dst_ip>>16) & 0XFF,
-                    (iterator->tuple.dst_ip>>8) & 0XFF,(iterator->tuple.dst_ip>>0) & 0XFF,
+                    (iterator->tuple.dst_ip>>0) & 0XFF,(iterator->tuple.dst_ip>>8) & 0XFF,
+                    (iterator->tuple.dst_ip>>16) & 0XFF,(iterator->tuple.dst_ip>>24) & 0XFF,
 
                     NSTEK_REV_ENDIAN(iterator->tuple.src_port),NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
                     iterator->tuple.protocol
@@ -310,6 +310,8 @@ nstek_display(void)
             printf("+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     }
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
+
+	fflush(stdout);
 }
 /* END OF NSTEK DEFINITION */
 
