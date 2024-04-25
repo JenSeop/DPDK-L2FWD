@@ -1135,14 +1135,14 @@ nstek_display(void)
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
-        iterator = hashTable[i].head;
+        iterator = hashTable[idx].head;
         //secondSesion = hashTable[i].count - 1;
 
-        if(hashTable[i].count)
+        if(hashTable[idx].count)
         {
-            txTotal += hashTable[i].traffic.tx;
-            rxTotal += hashTable[i].traffic.rx;
-            printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", i, hashTable[i].traffic.tx, hashTable[i].traffic.rx);
+            txTotal += hashTable[idx].traffic.tx;
+            rxTotal += hashTable[idx].traffic.rx;
+            printf("| %d\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t%u\t%u\t|\n", i, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
         }
 
         for(jdx = 0; iterator; jdx++)
@@ -1163,7 +1163,7 @@ nstek_display(void)
             iterator = iterator->next;
         }
 
-        if(hashTable[i].count)
+        if(hashTable[idx].count)
             printf("+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     }
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
