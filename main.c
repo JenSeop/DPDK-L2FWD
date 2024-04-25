@@ -293,7 +293,7 @@ nstek_display(void)
         for(jdx = 0; iterator; jdx++)
         {
             if((((jdx == firstSession)) || ((jdx == secondSesion))))
-                printf("\t\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%d\n",
+                printf("\t\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\n",
                     //nstek_hashSession(iterator->tuple),
 
                     (iterator->tuple.src_ip>>0) & 0XFF,(iterator->tuple.src_ip>>8) & 0XFF,
