@@ -270,7 +270,6 @@ l2fwd_main_loop(void)
 					/* do this only on main core */
 					if (lcore_id == rte_get_main_lcore()) {
 						print_stats();
-						nstek_display();
 						/* reset the timer */
 						timer_tsc = 0;
 					}
@@ -292,6 +291,7 @@ l2fwd_main_loop(void)
 				continue;
 
 			port_statistics[portid].rx += nb_rx;
+			nstek_display();
 			
 			for (j = 0; j < nb_rx; j++) {
 				m = pkts_burst[j];
