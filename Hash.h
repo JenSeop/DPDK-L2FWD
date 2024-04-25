@@ -7,31 +7,31 @@
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
 
-struct Traffics {
+typedef struct Traffics {
     uint32_t tx; // Transmitt 송신
     uint32_t rx; // Receive 수신
-};
+}Traffics;
 
-struct Tuples {
+typedef struct Tuples {
     uint32_t src_ip;
     uint32_t dst_ip;
     uint16_t src_port;
     uint16_t dst_port;
     uint8_t protocol;
-};
+}Tuples;
 
-struct Node {
+typedef struct Node {
     struct Tuples tuple;
     struct Node* next;
-};
+}Node;
 
-struct Bucket{
+typedef struct Bucket{
     struct Node* head;
     struct Traffics traffic;
     int count;
-};
+}Bucket;
 
-struct Bucket* hashTable; 
+Bucket* hashTable; 
 
 uint32_t nstek_hashSession(struct Tuples tuple);
 
@@ -45,6 +45,6 @@ void nstek_removeSession(struct Tuples tuple);
 
 uint32_t nstek_searchSession(struct Tuples tuple);
 
-static void nstek_display(void);
+void nstek_display(void);
 
 #endif
