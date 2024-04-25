@@ -1,40 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "Hash.h"
 
-#define BUCKET_SIZE 10007 // 20011 10007 100003
-#define REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
-
-#define PKT 10
-int pkt = PKT;
-
-struct Bucket* hashTable = NULL; 
-
-struct Traffics {
-    uint32_t tx; // Transmitt 송신
-    uint32_t rx; // Receive 수신
-};
-
-struct Tuples {
-    uint32_t src_ip;
-    uint32_t dst_ip;
-    uint16_t src_port;
-    uint16_t dst_port;
-    uint8_t protocol;
-};
-
-struct Node {
-    struct Tuples tuple;
-    struct Node* next;
-};
-
-struct Bucket{
-    struct Node* head;
-    struct Traffics traffic;
-    int count;
-};
-
-uint32_t hashSession(struct Tuples tuple)
+uint32_t nstek_hashSession(struct Tuples tuple)
 {
     uint32_t hash = 5381;
     hash = ((hash << 5) + hash) ^ (tuple.src_ip<<24) ^ (tuple.dst_ip<<24);
@@ -44,10 +13,10 @@ uint32_t hashSession(struct Tuples tuple)
     hash = ((hash << 5) + hash) ^ (tuple.src_port) ^ (tuple.protocol);
     hash = ((hash << 5) + hash) ^ (tuple.dst_port) ^ (tuple.protocol);
 
-    return hash % BUCKET_SIZE;
+    return hash % NSTEK_BUCKET_SIZE;
 }
 
-int compareSession(struct Tuples a, struct Tuples b)
+int nstek_compareSession(struct Tuples a, struct Tuples b)
 {
     return (
             (
@@ -60,7 +29,7 @@ int compareSession(struct Tuples a, struct Tuples b)
         );
 }
 
-struct Node* createNode(struct Tuples tuple)
+struct Node* nstek_createNode(struct Tuples tuple)
 {
     struct Node* newNode;
 
@@ -72,15 +41,15 @@ struct Node* createNode(struct Tuples tuple)
     return newNode;
 }
 
-void createBucket(struct Tuples tuple, struct Traffics traffic)
+void nstek_createBucket(struct Tuples tuple, struct Traffics traffic)
 {
-    uint32_t hashIndex = hashSession(tuple);
-    struct Node* newNode = createNode(tuple);
+    uint32_t hashIndex = nstek_hashSession(tuple);
+    struct Node* newNode = nstek_createNode(tuple);
 
     // Open addressing for other sessions
-    if(hashTable[hashIndex].head && compareSession(tuple, hashTable[hashIndex].head->tuple) == 0)
+    if(hashTable[hashIndex].head && nstek_compareSession(tuple, hashTable[hashIndex].head->tuple) == 0)
         while(hashTable[hashIndex].head)
-            hashIndex = hashIndex + 1 % BUCKET_SIZE;
+            hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
     // If it is the same session, chaining is done.
 
     if (hashTable[hashIndex].count == 0){
@@ -98,9 +67,9 @@ void createBucket(struct Tuples tuple, struct Traffics traffic)
     hashTable[hashIndex].traffic.rx += traffic.rx;
 }
 
-void removeSession(struct Tuples tuple)
+void nstek_removeSession(struct Tuples tuple)
 {
-    uint32_t hashIndex = hashSession(tuple);
+    uint32_t hashIndex = nstek_hashSession(tuple);
     
     int flg = 0;
     
@@ -111,7 +80,7 @@ void removeSession(struct Tuples tuple)
     
     while (node)
     {
-        if (hashSession(node->tuple) == hashIndex){
+        if (nstek_hashSession(node->tuple) == hashIndex){
             
             if (node == hashTable[hashIndex].head){
                 hashTable[hashIndex].head = node->next;
@@ -129,14 +98,14 @@ void removeSession(struct Tuples tuple)
     }
 }
 
-uint32_t searchSession(struct Tuples tuple)
+uint32_t nstek_searchSession(struct Tuples tuple)
 {
-    uint32_t hashIndex = hashSession(tuple);
+    uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
     int flg = 0;
     while (node)
     {
-        if (hashSession(tuple) == hashIndex)
+        if (nstek_hashSession(tuple) == hashIndex)
             return hashIndex;
         node = node->next;
     }
@@ -144,7 +113,7 @@ uint32_t searchSession(struct Tuples tuple)
     return 0;
 }
 
-void display()
+void nstek_display()
 {
     struct Node* iterator;
     uint32_t firstSession = 0;
@@ -156,7 +125,7 @@ void display()
     printf("| Session\tSource IP\t\tDestination IP\t\tSource Port\tDestination Port\tProtocol\tTX\tRX\t|");
     printf("\n+---------------------------------------------------------------------------------------------------------------------------------------+\n");
     
-    for (int i = 1; i<BUCKET_SIZE; i++){
+    for (int i = 1; i<NSTEK_BUCKET_SIZE; i++){
         iterator = hashTable[i].head;
         secondSesion = hashTable[i].count - 1;
 
@@ -171,7 +140,7 @@ void display()
         {
             //if(j == firstSession || j == secondSesion)
                 printf("|\t\t%d.%d.%d.%d\t\t%d.%d.%d.%d\t\t%u\t\t%u\t\t\t%u\t\t\t\t|\n",
-                    hashSession(iterator->tuple),
+                    nstek_hashSession(iterator->tuple),
 
                     (iterator->tuple.src_ip>>24) & 0XFF,(iterator->tuple.src_ip>>16) & 0XFF,
                     (iterator->tuple.src_ip>>8) & 0XFF,(iterator->tuple.src_ip>>0) & 0XFF,
@@ -179,7 +148,7 @@ void display()
                     (iterator->tuple.dst_ip>>24) & 0XFF,(iterator->tuple.dst_ip>>16) & 0XFF,
                     (iterator->tuple.dst_ip>>8) & 0XFF,(iterator->tuple.dst_ip>>0) & 0XFF,
 
-                    REV_ENDIAN(iterator->tuple.src_port),REV_ENDIAN(iterator->tuple.dst_port),
+                    NSTEK_REV_ENDIAN(iterator->tuple.src_port),NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
                     iterator->tuple.protocol
                 );
             iterator = iterator->next;
@@ -190,46 +159,3 @@ void display()
     }
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 }
-
-/*
-int main(){
-    hashTable = (struct Bucket *)malloc(BUCKET_SIZE * sizeof(struct Bucket));
-    struct Traffics traffic = {400, 400};
-
-    for (int i=0; i < pkt; i++){
-        struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 5376, 20480, 6 + (i/10)};
-        //struct Tuples tuple = { 3232235777, 2886794753, 53764, 20480, 6};
-        createBucket(tuple, traffic);
-    }
-    // eq session 01
-    for (int i=0; i < 5; i++){
-        //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 3232235777, 2886794753, 5376, 20480, 6};
-        createBucket(tuple, traffic);
-    }
-    for (int i=0; i < 5; i++){
-        //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 2886794753, 3232235777, 5376, 20480, 6};
-        createBucket(tuple, traffic);
-    }
-    // eq session 02
-    for (int i=0; i < 5; i++){
-        //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 3232235786, 2886794753, 5376, 20480, 6};
-        createBucket(tuple, traffic);
-    }
-    for (int i=0; i < 5; i++){
-        //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 2886794753, 3232235786, 5376, 20480, 6};
-        createBucket(tuple, traffic);
-    }
-
-    display();
-
-    for (int i=0; i < pkt; i++){
-        //struct Tuples tuple = { 3232235777 + i, 2886794753 - i, 53764, 20480, 6 + (i/10)};
-        struct Tuples tuple = { 2886794744, 2886794753, 53764, 20480, 6};
-        removeSession(tuple);
-    }
-}
-*/

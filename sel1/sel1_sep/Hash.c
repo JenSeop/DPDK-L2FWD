@@ -113,7 +113,7 @@ uint32_t nstek_searchSession(struct Tuples tuple)
     return 0;
 }
 
-void nstek_display()
+void nstek_display(void)
 {
     struct Node* iterator;
     uint32_t firstSession = 0;

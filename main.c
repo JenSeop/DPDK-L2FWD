@@ -299,9 +299,11 @@ l2fwd_main_loop(void)
 				rte_prefetch0(rte_pktmbuf_mtod(m, void *));
 				l2fwd_simple_forward(m, portid);
 			/* >8 End of read packet from RX queues. */
+			}
 		}
 	}
 }
+
 
 static int
 l2fwd_launch_one_lcore(__rte_unused void *dummy)

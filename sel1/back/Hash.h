@@ -1,8 +1,8 @@
 #ifndef ___HASH_H
 #define ___HASH_H
 
-#include "Hash.h"
 #include <stdint.h>
+#include "Hash.h"
 
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
@@ -45,6 +45,6 @@ void nstek_removeSession(struct Tuples tuple);
 
 uint32_t nstek_searchSession(struct Tuples tuple);
 
-void nstek_display(void);
+static void nstek_display();
 
 #endif

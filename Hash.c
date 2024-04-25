@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "Hash.h"
 
-static uint32_t nstek_hashSession(struct Tuples tuple)
+uint32_t nstek_hashSession(struct Tuples tuple)
 {
     uint32_t hash = 5381;
     hash = ((hash << 5) + hash) ^ (tuple.src_ip<<24) ^ (tuple.dst_ip<<24);
@@ -16,7 +16,7 @@ static uint32_t nstek_hashSession(struct Tuples tuple)
     return hash % NSTEK_BUCKET_SIZE;
 }
 
-static int nstek_compareSession(struct Tuples a, struct Tuples b)
+int nstek_compareSession(struct Tuples a, struct Tuples b)
 {
     return (
             (
@@ -29,7 +29,7 @@ static int nstek_compareSession(struct Tuples a, struct Tuples b)
         );
 }
 
-static struct Node* nstek_createNode(struct Tuples tuple)
+struct Node* nstek_createNode(struct Tuples tuple)
 {
     struct Node* newNode;
 
@@ -41,7 +41,7 @@ static struct Node* nstek_createNode(struct Tuples tuple)
     return newNode;
 }
 
-static void nstek_createBucket(struct Tuples tuple, struct Traffics traffic)
+void nstek_createBucket(struct Tuples tuple, struct Traffics traffic)
 {
     uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* newNode = nstek_createNode(tuple);
@@ -67,7 +67,7 @@ static void nstek_createBucket(struct Tuples tuple, struct Traffics traffic)
     hashTable[hashIndex].traffic.rx += traffic.rx;
 }
 
-static void nstek_removeSession(struct Tuples tuple)
+void nstek_removeSession(struct Tuples tuple)
 {
     uint32_t hashIndex = nstek_hashSession(tuple);
     
@@ -98,7 +98,7 @@ static void nstek_removeSession(struct Tuples tuple)
     }
 }
 
-static uint32_t nstek_searchSession(struct Tuples tuple)
+uint32_t nstek_searchSession(struct Tuples tuple)
 {
     uint32_t hashIndex = nstek_hashSession(tuple);
     struct Node* node = hashTable[hashIndex].head;
@@ -113,7 +113,7 @@ static uint32_t nstek_searchSession(struct Tuples tuple)
     return 0;
 }
 
-static void nstek_display(void)
+void nstek_display(void)
 {
     struct Node* iterator;
     uint32_t firstSession = 0;
