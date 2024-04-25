@@ -117,7 +117,7 @@ nstek_createNode(struct Tuples tuple){
 
 static void
 nstek_createBucket(struct Tuples tuple, struct Traffics traffic){
-    uint32_t hashIndex = hashSession(tuple);
+    static uint32_t hashIndex = hashSession(tuple);
     struct Node* newNode = nstek_createNode(tuple);
 
     // Open addressing for other sessions
