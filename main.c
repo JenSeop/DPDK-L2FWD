@@ -150,14 +150,6 @@ Bucket{
 
 Bucket* hashTable; 
 
-/*
-static void
-nstek_headerTest(void)
-{
-    printf("Hello NSTEK\n");
-}
-*/
-
 static uint32_t
 nstek_hashSession(Tuples tuple)
 {
@@ -506,7 +498,6 @@ l2fwd_main_loop(void)
 				continue;
 
 			port_statistics[portid].rx += nb_rx;
-			nstek_headerTest();
 			
 			for (j = 0; j < nb_rx; j++) {
 				m = pkts_burst[j];
