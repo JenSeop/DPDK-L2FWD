@@ -476,7 +476,8 @@ l2fwd_main_loop(void)
 
 					/* do this only on main core */
 					if (lcore_id == rte_get_main_lcore()) {
-						print_stats();
+						//print_stats();
+						nstek_display();
 						/* reset the timer */
 						timer_tsc = 0;
 					}
@@ -521,7 +522,6 @@ l2fwd_main_loop(void)
 			traffic.rx = 0;	// rx
 
 			nstek_createBucket(tuple, traffic);
-			nstek_display();
 			/* END OF NSTEK MAIN LOOP CODE */
 			}
 		}
