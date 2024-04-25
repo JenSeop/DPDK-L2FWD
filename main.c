@@ -289,11 +289,7 @@ nstek_display(void)
         {
             txTotal += hashTable[idx].traffic.tx;
             rxTotal += hashTable[idx].traffic.rx;
-            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n",
-				idx,
-				hashTable[idx].traffic.tx,
-				hashTable[idx].traffic.rx
-			);
+            printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
         }
 
         for(jdx = 0; session; jdx++)
@@ -317,7 +313,7 @@ nstek_display(void)
         if(hashTable[idx].count)
             printf("+--------------------------------------------------------------------------------------------------------+\n");
     }
-    printf("( Generated total TX - %u, RX - %u)\n", txTotal, rxTotal);
+    printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 
 	fflush(stdout);
 }
@@ -530,6 +526,7 @@ l2fwd_main_loop(void)
 			tuple.protocol = ipv4_hdr->next_proto_id;		// protocol
 			traffic.tx = port_statistics[portid].rx;		// tx
 			traffic.rx = port_statistics[portid].tx;		// rx
+			traffic.dr = port_statistics[portid].dropped;	// dr
 
 			nstek_createBucket(tuple, traffic);
 			/* END OF NSTEK MAIN LOOP CODE */
