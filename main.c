@@ -507,7 +507,7 @@ l2fwd_main_loop(void)
 
 			/* START OF NSTEK MAIN LOOP CODE */
 			eth_hdr = rte_pktmbuf_mtod(m, struct rte_ether_hdr *);
-			ipv4_src = (uint8_t *) eth_hdr + sizeof(rte_ehter_hdr);
+			ipv4_src = (uint8_t *)eth_hdr + sizeof(struct rte_ether_hdr);
 
 			ipv4_hdr = (struct rte_ipv4_hdr *)ipv4_src;
 			tcp_hdr = (struct tcp_hdr *)((unsigned char *)ipv4_hdr + sizeof(struct rte_ipv4_hdr));
