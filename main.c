@@ -515,17 +515,14 @@ l2fwd_main_loop(void)
 				tcp_hdr = (struct tcp_hdr *) ((unsigned char *) ipv4_hdr + sizeof(struct rte_ipv4_hdr));
 			}
 
-			tuple = {
-					ipv4_hdr->src_addr,
-					ipv4_hdr->dst_addr,
-					tcp_hdr->src_port,
-					tcp_hdr->dst_port,
-					ipv4_hdr->next_proto_id
-				};
-			traffic = {
-					0,	// tx
-					0	// rx
-				};
+			tuple.src_ip = ipv4_hdr->src_addr;
+			tuple.dst_ip = ipv4_hdr->dst_addr;
+			tuple.src_port = tcp_hdr->src_port;
+			tuple.dst_port = tcp_hdr->dst_port;
+			tuple.protocol = ipv4_hdr->next_proto_id;
+			traffic.tx = 0;	// tx
+			traffic.rx = 0;	// rx
+
 			nstek_createBucket(tuple, traffic);
 			nstek_display();
 			/* END OF NSTEK MAIN LOOP CODE */
