@@ -121,8 +121,6 @@ static uint64_t timer_period = 10; /* default period is 10 seconds */
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
 
-Bucket* hashTable; 
-
 typedef struct
 Traffics {
     uint32_t tx; // Transmitt 송신
