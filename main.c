@@ -522,8 +522,8 @@ l2fwd_main_loop(void)
 			tuple.src_port = tcp_hdr->src_port;
 			tuple.dst_port = tcp_hdr->dst_port;
 			tuple.protocol = ipv4_hdr->next_proto_id;
-			traffic.tx = port_statistics[portid].rx += nb_rx;	// tx
-			traffic.rx = port_statistics[portid].tx += nb_tx;	// rx
+			traffic.tx = port_statistics[portid].rx;	// tx
+			traffic.rx = port_statistics[portid].tx;	// rx
 
 			nstek_createBucket(tuple, traffic);
 			/* END OF NSTEK MAIN LOOP CODE */
