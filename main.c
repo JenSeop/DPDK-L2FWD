@@ -116,8 +116,7 @@ struct l2fwd_port_statistics port_statistics[RTE_MAX_ETHPORTS];
 /* A tsc-based timer responsible for triggering statistics printout */
 static uint64_t timer_period = 10; /* default period is 10 seconds */
 
-
-//
+/* START OF NSTEK DEFINITION */
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
 
@@ -151,38 +150,14 @@ Bucket{
 
 Bucket* hashTable; 
 
-//
-
-
 /*
-static uint32_t
-nstek_hashSession(Tuples);
-
-static int
-nstek_compareSession(Tuples, Tuples);
-
-static struct
-Node* nstek_createNode(Tuples);
-
-static void
-nstek_createBucket(Tuples, Traffics);
-
-static void
-nstek_removeSession(Tuples);
-
-static uint32_t
-nstek_searchSession(Tuples);
-
-static void
-nstek_display(void);
-*/
-
 static void
 nstek_headerTest(void)
 {
     printf("Hello NSTEK\n");
 }
-/*
+*/
+
 static uint32_t
 nstek_hashSession(Tuples tuple)
 {
@@ -250,7 +225,7 @@ nstek_createBucket(Tuples tuple, Traffics traffic)
     hashTable[hashIndex].traffic.tx += traffic.tx;
     hashTable[hashIndex].traffic.rx += traffic.rx;
 }
-
+/*
 static void
 nstek_removeSession(Tuples tuple)
 {
@@ -295,7 +270,7 @@ nstek_searchSession(Tuples tuple)
     
     return 0;
 }
-
+*/
 static void
 nstek_display(void)
 {
@@ -344,10 +319,7 @@ nstek_display(void)
     }
     printf("( Generated total TX - %u, RX - %u )\n",txTotal ,rxTotal);
 }
-
-*/
-//
-
+/* END OF NSTEK DEFINITION */
 
 /* Print out statistics on packets dropped */
 static void
@@ -447,6 +419,16 @@ l2fwd_main_loop(void)
 	const uint64_t drain_tsc = (rte_get_tsc_hz() + US_PER_S - 1) / US_PER_S *
 			BURST_TX_DRAIN_US;
 	struct rte_eth_dev_tx_buffer *buffer;
+	/* START OF NSTEK MAIN LOOP IDX */
+	// DPDK
+	struct rte_ether_hdr *eth_hdr;
+	struct rte_ipv4_hdr *ipv4_hdr;
+	struct rte_tcp_hdr *tcp_hdr;
+	void *ipv4_src;
+	// CST
+	Tuples tuple;		// IPv4 5 Tuples
+	Traffics traffic;	// tx_rx
+	/* END OF NSTEK MAIN LOOP IDX */
 
 	prev_tsc = 0;
 	timer_tsc = 0;
@@ -531,6 +513,31 @@ l2fwd_main_loop(void)
 				rte_prefetch0(rte_pktmbuf_mtod(m, void *));
 				l2fwd_simple_forward(m, portid);
 			/* >8 End of read packet from RX queues. */
+
+			/* START OF NSTEK MAIN LOOP CODE */
+			eth_hdr = rte_pktmbuf_mtod(m, struct rte_ether_hdr *);
+			ipv4_src = (uint8_t *) eth_hdr + sizeof(struct rte_ehter_hdr);
+
+			if (eth_hdr->ether_type == rte_cpu_to_be16(RTE_ETHER_TYPE_IPV4))
+			{
+				ipv4_hdr = (struct rte_ipv4_hdr *) ipv4_src;
+				tcp_hdr = (struct tcp_hdr *) ((unsigned char *) ipv4_hdr + sizeof(struct rte_ipv4_hdr));
+			}
+
+			tuple = {
+					ipv4_hdr->src_addr,
+					ipv4_hdr->dst_addr,
+					tcp_hdr->src_port,
+					tcp_hdr->dst_port,
+					ipv4_hdr->next_proto_id
+				};
+			traffic = {
+					0,	// tx
+					0	// rx
+				};
+			nstek_createBucket(tuple, traffic);
+			nstek_display();
+			/* END OF NSTEK MAIN LOOP CODE */
 			}
 		}
 	}
@@ -888,6 +895,9 @@ signal_handler(int signum)
 int
 main(int argc, char **argv)
 {
+	/* NSTEK MAIN */
+	hashTable = (struct Bucket *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct Bucket));
+	
 	struct lcore_queue_conf *qconf;
 	int ret;
 	uint16_t nb_ports;
