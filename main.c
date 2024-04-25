@@ -266,13 +266,12 @@ nstek_searchSession(Tuples tuple)
 static void
 nstek_display(void)
 {
-    struct Node* session;
+    struct Node* iterator;
     uint32_t firstSession = 0;
     uint32_t secondSesion = 0;
     uint32_t txTotal = 0;
     uint32_t rxTotal = 0;
 	int idx, jdx;
-	int proto;
 
 	const char clr[] = { 27, '[', '2', 'J', '\0' };
 	const char topLeft[] = { 27, '[', '1', ';', '1', 'H','\0' };
@@ -281,8 +280,7 @@ nstek_display(void)
     printf("\n+--------------------------------------------------------------------------------------------------------+\n");
     
     for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
-        session = hashTable[idx].head;
-		proto = hashTable[idx].head->tuple.protocol;
+        iterator = hashTable[idx].head;
         secondSesion = hashTable[idx].count - 1;
 
         if(hashTable[idx].count)
@@ -292,22 +290,22 @@ nstek_display(void)
             printf("%d\t\t\t\t\t\t\t\t\t\t\t%u / %u\n", idx, hashTable[idx].traffic.tx, hashTable[idx].traffic.rx);
         }
 
-        for(jdx = 0; session; jdx++)
+        for(jdx = 0; iterator; jdx++)
         {
             if((((jdx == firstSession)) || ((jdx == secondSesion))))
-                printf("\t\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\n",
-                    //nstek_hashSession(session->tuple),
+                printf("\t\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%d\n",
+                    //nstek_hashSession(iterator->tuple),
 
-                    (session->tuple.src_ip>>0) & 0XFF,(session->tuple.src_ip>>8) & 0XFF,
-                    (session->tuple.src_ip>>16) & 0XFF,(session->tuple.src_ip>>24) & 0XFF,
+                    (iterator->tuple.src_ip>>0) & 0XFF,(iterator->tuple.src_ip>>8) & 0XFF,
+                    (iterator->tuple.src_ip>>16) & 0XFF,(iterator->tuple.src_ip>>24) & 0XFF,
 
-                    (session->tuple.dst_ip>>0) & 0XFF,(session->tuple.dst_ip>>8) & 0XFF,
-                    (session->tuple.dst_ip>>16) & 0XFF,(session->tuple.dst_ip>>24) & 0XFF,
+                    (iterator->tuple.dst_ip>>0) & 0XFF,(iterator->tuple.dst_ip>>8) & 0XFF,
+                    (iterator->tuple.dst_ip>>16) & 0XFF,(iterator->tuple.dst_ip>>24) & 0XFF,
 
-                    NSTEK_REV_ENDIAN(session->tuple.src_port),NSTEK_REV_ENDIAN(session->tuple.dst_port),
-                    (proto == 1) ? "ICMP" :  (proto == 6) ? "TCP" : (proto == 17) ? "UDP" : (proto == 114) ? "Any 0-hop" : "None"
+                    NSTEK_REV_ENDIAN(iterator->tuple.src_port),NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
+                    iterator->tuple.protocol
                 );
-            session = session->next;
+            iterator = iterator->next;
         }
 
         if(hashTable[idx].count)
@@ -519,13 +517,13 @@ l2fwd_main_loop(void)
 			ipv4_hdr = (struct rte_ipv4_hdr *)ipv4_src;
 			tcp_hdr = (struct tcp_hdr *)((unsigned char *)ipv4_hdr + sizeof(struct rte_ipv4_hdr));
 
-			tuple.src_ip = ipv4_hdr->src_addr;				// src ip
-			tuple.dst_ip = ipv4_hdr->dst_addr;				// dst ip
-			tuple.src_port = tcp_hdr->src_port;				// src port
-			tuple.dst_port = tcp_hdr->dst_port;				// dst port
-			tuple.protocol = ipv4_hdr->next_proto_id;		// protocol
-			traffic.tx = port_statistics[portid].rx;		// tx
-			traffic.rx = port_statistics[portid].tx;		// rx
+			tuple.src_ip = ipv4_hdr->src_addr;
+			tuple.dst_ip = ipv4_hdr->dst_addr;
+			tuple.src_port = tcp_hdr->src_port;
+			tuple.dst_port = tcp_hdr->dst_port;
+			tuple.protocol = ipv4_hdr->next_proto_id;
+			traffic.tx = port_statistics[portid].rx;	// tx
+			traffic.rx = port_statistics[portid].tx;	// rx
 
 			nstek_createBucket(tuple, traffic);
 			/* END OF NSTEK MAIN LOOP CODE */
