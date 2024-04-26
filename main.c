@@ -379,11 +379,11 @@ nstek_session_display(void)
                 // PROTOCOL
                 NSTEK_PROTOCOL((hash_table[hash_index].head->tuple.protocol)),
                 // TX
-                hashTable[idx].traffic.tx,
+                hash_table[idx].traffic.tx,
                 // RX
-                hashTable[idx].traffic.rx,
+                hash_table[idx].traffic.rx,
                 // DR
-                hashTable[idx].traffic.dr
+                hash_table[idx].traffic.dr
             )
             hash_table[hash_index].head = hash_table[hash_index].head->next;
         }
@@ -525,7 +525,7 @@ l2fwd_main_loop(void)
                 // TRAFFIC
                 traffic.tx = port_statistics[portid].rx;
                 traffic.rx = port_statistics[portid].rx;
-                traffic.dr = port_statistics[portidx].dropped;
+                traffic.dr = port_statistics[portid].dropped;
 
                 /* END OF NSTEK MAIN LOOP */
 			}
