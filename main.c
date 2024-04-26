@@ -352,7 +352,7 @@ nstek_session_display(void)
 
     // CLEAR DISPLAY
 	printf("%s%s", clr, topLeft);
-    printf("\n+--------------------------------------------------------------------------------------------------------+\n");
+    //printf("\n+--------------------------------------------------------------------------------------------------------+\n");
     
     for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
     {
@@ -389,8 +389,8 @@ nstek_session_display(void)
             hash_table[hash_index].head = hash_table[hash_index].head->next;
         }
 
-        if(hash_table[hash_index].session_cnt)
-             printf("\n+--------------------------------------------------------------------------------------------------------+\n");
+        //if(hash_table[hash_index].session_cnt)
+        //     printf("+--------------------------------------------------------------------------------------------------------+\n");
     }
 
     printf("( Generated Total TX - %u, RX - %u, DR - %u)\n", tx_total, rx_total, dr_total);
