@@ -312,7 +312,7 @@ nstek_create_hash_table(Tuples tuple, Traffics traffic)
 
     if(hash_table[hash_index].head)
     {   // collision!
-        if(nstek_compare_session(tuple, hash_table[hash_index].head))
+        if(nstek_compare_session(tuple, hash_table[hash_index].head->tuple))
         {   // if same session? => attatch new session
             new_session->next = hash_table[hash_index].head;
             hash_table[hash_index].session_cnt += 1;
