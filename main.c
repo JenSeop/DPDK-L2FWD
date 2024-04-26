@@ -168,31 +168,36 @@ nstek_hashSession(Tuples tuple)
 static int
 nstek_compareSession(Tuples a, Tuples b)
 {
-	/*
+	
 	printf("income = %u %u %u %u %u\n", a.src_ip, a.dst_ip, a.src_port, a.dst_port, a.protocol);
 	printf("search = %u %u %u %u %u\n", b.src_ip, b.dst_ip, b.src_port, b.dst_port, b.protocol);
 	printf("income hash = %u\n",nstek_hashSession(a));
 	printf("search hash = %u\n",nstek_hashSession(b));
 	printf("ip flag = %d\n",
 		((
-			((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
-			((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
+			(((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip))) ||
+			(((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip)))
 		)));
 	printf("port flag = %d\n",
 		((
-			((a.src_port == b.src_port)) && ((a.dst_port == b.dst_port))
+			(((a.src_port == b.src_port)) && ((a.dst_port == b.dst_port))) ||
+			(((a.src_port == b.dst_port)) && ((a.dst_port == b.src_port)))
+		)));
+	printf("protocol flag = %d\n",
+		((
+			((a.protocol == b.protocol))
 		)));
 	printf("\n");
-	*/
+	
     return
 		(
 			((
-				((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
-				((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
+				(((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip))) ||
+				(((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip)))
 			)) &&
 			((
-				((a.src_port == b.src_port)) && ((a.dst_port == b.dst_port)) ||
-				((a.src_port == b.dst_port)) && ((a.dst_port == b.src_port))
+				(((a.src_port == b.src_port)) && ((a.dst_port == b.dst_port))) ||
+				(((a.src_port == b.dst_port)) && ((a.dst_port == b.src_port)))
 			)) &&
 			((
 				((a.protocol == b.protocol))
