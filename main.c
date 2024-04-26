@@ -168,7 +168,7 @@ nstek_hashSession(Tuples tuple)
 static int
 nstek_compareSession(Tuples a, Tuples b)
 {
-	
+	/*
 	printf("search = %d.%d.%d.%d / %d.%d.%d.%d / %u %u / %u\n",
 		(a.src_ip>>0) & 0XFF,(a.src_ip>>8) & 0XFF,
 		(a.src_ip>>16) & 0XFF,(a.src_ip>>24) & 0XFF,
@@ -212,6 +212,7 @@ nstek_compareSession(Tuples a, Tuples b)
 			((a.protocol == b.protocol))
 		)));
 	printf("\n");
+	*/
 	
     return
 		(
@@ -242,7 +243,7 @@ nstek_findEqaulSession(Tuples tuple)
 			while(node)
 			{
 				if(nstek_compareSession(tuple, node->tuple))
-					return nstek_hashSession(hashTable[idx].head->tuple);
+					return nstek_hashSession(node->tuple);
 				node = node->next;
 			}
 		}
