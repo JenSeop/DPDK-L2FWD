@@ -350,18 +350,22 @@ nstek_session_display(void)
 	const char clr[] = { 27, '[', '2', 'J', '\0' };
 	const char topLeft[] = { 27, '[', '1', ';', '1', 'H','\0' };
 
-    // CLEAR DISPLAY
-	printf("%s%s", clr, topLeft);
-	printf("- NSTEK Session Tracker utilizing DPDK L2FWD\n");
-    printf("- Generated Total TX => %u, RX => %u, DR => %u\n\n", tx_total, rx_total, dr_total);
-
-    for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
+	for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
     {
         // CALC TRAFFIC
         tx_total += hash_table[hash_index].traffic.tx;
         rx_total += hash_table[hash_index].traffic.rx;
         dr_total += hash_table[hash_index].traffic.dr;
+	}
 
+    // CLEAR DISPLAY
+	printf("%s%s", clr, topLeft);
+	printf("- NSTEK Session Tracker utilizing DPDK L2FWD\n");
+    printf("- Generated Total TX => %u, RX => %u, DR => %u\n\n", tx_total, rx_total, dr_total);
+	printf("Session\tIP\t\tPORT\t\tPROTOCOL\tTX\tRX\tDR\n\n");
+
+    for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
+    {
         for(session_index = 0; hash_table[hash_index].head; session_index++)
         {
             printf(
