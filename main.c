@@ -169,8 +169,32 @@ static int
 nstek_compareSession(Tuples a, Tuples b)
 {
 	
-	printf("income = %u %u %u %u %u\n", a.src_ip, a.dst_ip, a.src_port, a.dst_port, a.protocol);
-	printf("search = %u %u %u %u %u\n", b.src_ip, b.dst_ip, b.src_port, b.dst_port, b.protocol);
+	printf("search = %d.%d.%d.%d / %d.%d.%d.%d / %u %u / %u\n",
+		(a.src_ip>>0) & 0XFF,(a.src_ip>>8) & 0XFF,
+		(a.src_ip>>16) & 0XFF,(a.src_ip>>24) & 0XFF,
+
+		(a.dst_ip>>0) & 0XFF,(a.dst_ip>>8) & 0XFF,
+		(a.dst_ip>>16) & 0XFF,(a.dst_ip>>24) & 0XFF,
+
+		NSTEK_REV_ENDIAN(a.src_port),NSTEK_REV_ENDIAN(a.dst_port),
+		
+		((a.protocol) == 1) ? "ICMP" : ((a.protocol) == 2) ? "IGMP" :
+		((a.protocol) == 6) ? "TCP" : ((a.protocol) == 17) ? "UDP" :
+		((a.protocol) == 114) ? "Any 0-hop" : "N/A"
+	);
+	printf("search = %d.%d.%d.%d / %d.%d.%d.%d / %u %u / %u\n", 
+		(b.src_ip>>0) & 0XFF,(b.src_ip>>8) & 0XFF,
+		(b.src_ip>>16) & 0XFF,(b.src_ip>>24) & 0XFF,
+
+		(b.dst_ip>>0) & 0XFF,(b.dst_ip>>8) & 0XFF,
+		(b.dst_ip>>16) & 0XFF,(b.dst_ip>>24) & 0XFF,
+
+		NSTEK_REV_ENDIAN(b.src_port),NSTEK_REV_ENDIAN(b.dst_port),
+		
+		((b.protocol) == 1) ? "ICMP" : ((b.protocol) == 2) ? "IGMP" :
+		((b.protocol) == 6) ? "TCP" : ((b.protocol) == 17) ? "UDP" :
+		((b.protocol) == 114) ? "Any 0-hop" : "N/A"
+	);
 	printf("income hash = %u\n",nstek_hashSession(a));
 	printf("search hash = %u\n",nstek_hashSession(b));
 	printf("ip flag = %d\n",
