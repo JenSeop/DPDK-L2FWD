@@ -389,7 +389,7 @@ nstek_session_display(void)
             );
             hash_table[hash_index].head = hash_table[hash_index].head->next;
         }
-		if(hash_table[hash_index].head)
+		if(hash_table[hash_index].session_cnt)
 			printf("\n");
 	}
 }
