@@ -121,6 +121,8 @@ struct l2fwd_port_statistics port_statistics[RTE_MAX_ETHPORTS];
 static uint64_t timer_period = 10; /* default period is 10 seconds */
 
 /* Print out statistics on packets dropped */
+
+/*
 static void
 print_stats(void)
 {
@@ -134,13 +136,11 @@ print_stats(void)
 	const char clr[] = { 27, '[', '2', 'J', '\0' };
 	const char topLeft[] = { 27, '[', '1', ';', '1', 'H','\0' };
 
-		/* Clear screen and move to top left */
 	printf("%s%s", clr, topLeft);
 
 	printf("\nPort statistics ====================================");
 
 	for (portid = 0; portid < RTE_MAX_ETHPORTS; portid++) {
-		/* skip disabled ports */
 		if ((l2fwd_enabled_port_mask & (1 << portid)) == 0)
 			continue;
 		printf("\nStatistics for port %u ------------------------------"
@@ -167,6 +167,7 @@ print_stats(void)
 
 	fflush(stdout);
 }
+*/
 
 static void
 l2fwd_mac_updating(struct rte_mbuf *m, unsigned dest_portid)
@@ -885,6 +886,10 @@ signal_handler(int signum)
 int
 main(int argc, char **argv)
 {
+	/* START OF NSTEK hash_table */
+	hash_table = (struct Bucket *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct Bucket));
+	/* END OF NSTEK hash_table */
+
 	struct lcore_queue_conf *qconf;
 	int ret;
 	uint16_t nb_ports;
