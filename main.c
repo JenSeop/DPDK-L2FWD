@@ -119,6 +119,9 @@ static uint64_t timer_period = 10; /* default period is 10 seconds */
 /* START OF NSTEK DEFINITION */
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
+#define NSTEK_PROTOCOL(n) (
+		(n) == 1 ? "ICMP" : (n) == 2 ? "IGMP" : (n) == 6 ? "TCP" :
+		(n) == 17 ? "UDP" : (n) == 114 ? "Any 0-hop" : "N/A")
 
 typedef struct
 Traffics {
@@ -168,8 +171,8 @@ nstek_hashSession(Tuples tuple)
 static int
 nstek_compareSession(Tuples a, Tuples b)
 {
-	/*
-	printf("search = %d.%d.%d.%d / %d.%d.%d.%d / %u %u / %u\n",
+	
+	printf("IN = %d.%d.%d.%d / %d.%d.%d.%d / %u %u / %u\n",
 		(a.src_ip>>0) & 0XFF,(a.src_ip>>8) & 0XFF,
 		(a.src_ip>>16) & 0XFF,(a.src_ip>>24) & 0XFF,
 
@@ -178,11 +181,9 @@ nstek_compareSession(Tuples a, Tuples b)
 
 		NSTEK_REV_ENDIAN(a.src_port),NSTEK_REV_ENDIAN(a.dst_port),
 		
-		((a.protocol) == 1) ? "ICMP" : ((a.protocol) == 2) ? "IGMP" :
-		((a.protocol) == 6) ? "TCP" : ((a.protocol) == 17) ? "UDP" :
-		((a.protocol) == 114) ? "Any 0-hop" : "N/A"
+		NSTEK_PROTOCOL(a.protocol)
 	);
-	printf("search = %d.%d.%d.%d / %d.%d.%d.%d / %u %u / %u\n", 
+	printf("SH = %d.%d.%d.%d / %d.%d.%d.%d / %u %u / %u\n", 
 		(b.src_ip>>0) & 0XFF,(b.src_ip>>8) & 0XFF,
 		(b.src_ip>>16) & 0XFF,(b.src_ip>>24) & 0XFF,
 
@@ -191,12 +192,10 @@ nstek_compareSession(Tuples a, Tuples b)
 
 		NSTEK_REV_ENDIAN(b.src_port),NSTEK_REV_ENDIAN(b.dst_port),
 		
-		((b.protocol) == 1) ? "ICMP" : ((b.protocol) == 2) ? "IGMP" :
-		((b.protocol) == 6) ? "TCP" : ((b.protocol) == 17) ? "UDP" :
-		((b.protocol) == 114) ? "Any 0-hop" : "N/A"
+		NSTEK_PROTOCOL(b.protocol)
 	);
-	printf("income hash = %u\n",nstek_hashSession(a));
-	printf("search hash = %u\n",nstek_hashSession(b));
+	printf("IN hash = %u\n",nstek_hashSession(a));
+	printf("SH hash = %u\n",nstek_hashSession(b));
 	printf("ip flag = %d\n",
 		((
 			(((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip))) ||
@@ -212,7 +211,7 @@ nstek_compareSession(Tuples a, Tuples b)
 			((a.protocol == b.protocol))
 		)));
 	printf("\n");
-	*/
+	
 	
     return
 		(
@@ -389,9 +388,7 @@ nstek_display(void)
 
                     NSTEK_REV_ENDIAN(iterator->tuple.src_port),NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
 					
-                    ((iterator->tuple.protocol) == 1) ? "ICMP" : ((iterator->tuple.protocol) == 2) ? "IGMP" :
-					((iterator->tuple.protocol) == 6) ? "TCP" : ((iterator->tuple.protocol) == 17) ? "UDP" :
-					((iterator->tuple.protocol) == 114) ? "Any 0-hop" : "N/A",
+					NSTEK_PROTOCOL((iterator->tuple.protocol)),
 
 					hashTable[idx].traffic.tx,
 					hashTable[idx].traffic.rx,
