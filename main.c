@@ -345,7 +345,7 @@ nstek_session_display(void)
     uint32_t tx_total = 0;
     uint32_t rx_total = 0;
     uint32_t dr_total = 0;
-    int hash_index = 0, session_index = 0;
+    int hash_index, session_index;
 
 	const char clr[] = { 27, '[', '2', 'J', '\0' };
 	const char topLeft[] = { 27, '[', '1', ';', '1', 'H','\0' };
@@ -354,14 +354,14 @@ nstek_session_display(void)
 	printf("%s%s", clr, topLeft);
     printf("\n+--------------------------------------------------------------------------------------------------------+\n");
     
-    for (hash_index; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
+    for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
     {
         // CALC TRAFFIC
         tx_total += hash_table[hash_index].traffic.tx;
         rx_total += hash_table[hash_index].traffic.rx;
-        dr_total == hash_table[hash_index].traffic.dr;
+        dr_total += hash_table[hash_index].traffic.dr;
 
-        for(session_index; hash_table[hash_index].head; session_index++)
+        for(session_index = 0; hash_table[hash_index].head; session_index++)
         {
             printf(
                 "%d\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\t%u / %u / %u\n",
@@ -527,6 +527,9 @@ l2fwd_main_loop(void)
                 traffic.tx = port_statistics[portid].rx;
                 traffic.rx = port_statistics[portid].rx;
                 traffic.dr = port_statistics[portid].dropped;
+
+				// CREATE DATA
+				nstek_create_hash_table(tuple, traffic);
 
                 /* END OF NSTEK MAIN LOOP */
 			}
