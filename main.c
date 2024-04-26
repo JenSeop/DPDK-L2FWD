@@ -352,8 +352,8 @@ nstek_session_display(void)
 
     // CLEAR DISPLAY
 	printf("%s%s", clr, topLeft);
-	printf("(NSTEK) Session Tracker utilizing DPDK L2FWD\n");
-    printf("( Generated Total TX - %u, RX - %u, DR - %u)\n\n", tx_total, rx_total, dr_total);
+	printf("- NSTEK Session Tracker utilizing DPDK L2FWD\n");
+    printf("- Generated Total TX => %u, RX => %u, DR => %u\n\n", tx_total, rx_total, dr_total);
 
     for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
     {
