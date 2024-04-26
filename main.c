@@ -119,9 +119,7 @@ static uint64_t timer_period = 10; /* default period is 10 seconds */
 /* START OF NSTEK DEFINITION */
 #define NSTEK_BUCKET_SIZE 10007
 #define NSTEK_REV_ENDIAN(n) ((uint16_t)(((n) >> 8) | (n) << 8))
-#define NSTEK_PROTOCOL(n) (
-		(n) == 1 ? "ICMP" : (n) == 2 ? "IGMP" : (n) == 6 ? "TCP" :
-		(n) == 17 ? "UDP" : (n) == 114 ? "Any 0-hop" : "N/A")
+#define NSTEK_PROTOCOL(n) ((n) == 1 ? "ICMP" : (n) == 2 ? "IGMP" : (n) == 6 ? "TCP" : (n) == 17 ? "UDP" : (n) == 114 ? "Any 0-hop" : "N/A")
 
 typedef struct
 Traffics {
