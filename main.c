@@ -365,7 +365,7 @@ nstek_session_display(void)
 	printf("%s%s", clr, topLeft);
 	printf("- NSTEK Session Tracker utilizing DPDK L2FWD\n");
 	printf(
-			"- Table SET => %u, USE => %u, RATE => %f\%\n",
+			"- Table SET => %u, USE => %u, RATE => %.2f\%\n",
 			NSTEK_BUCKET_SIZE, hash_table_use_cnt,
 			(((float)hash_table_use_cnt / (float)NSTEK_BUCKET_SIZE) * 100)
 		);
