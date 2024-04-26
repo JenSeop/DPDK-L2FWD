@@ -379,12 +379,12 @@ nstek_session_display(void)
                 // PROTOCOL
                 NSTEK_PROTOCOL((hash_table[hash_index].head->tuple.protocol)),
                 // TX
-                hash_table[idx].traffic.tx,
+                hash_table[hash_index].traffic.tx,
                 // RX
-                hash_table[idx].traffic.rx,
+                hash_table[hash_index].traffic.rx,
                 // DR
-                hash_table[idx].traffic.dr
-            )
+                hash_table[hash_index].traffic.dr
+            );
             hash_table[hash_index].head = hash_table[hash_index].head->next;
         }
 
