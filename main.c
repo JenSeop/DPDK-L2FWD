@@ -276,18 +276,14 @@ nstek_compare_session(Tuples tuple_a, Tuples tuple_b)
     (
         // IP
         ((
-            ((((tuple_a.src_ip == tuple_b.src_ip)) && ((tuple_a.dst_ip == tuple_b.dst_ip))))
-            ||
+            ((((tuple_a.src_ip == tuple_b.src_ip)) && ((tuple_a.dst_ip == tuple_b.dst_ip)))) ||
             ((((tuple_a.src_ip == tuple_b.dst_ip)) && ((tuple_a.dst_ip == tuple_b.src_ip))))
-        ))
-        &&
+        )) &&
         // Port
         ((
-            ((((tuple_a.src_port == tuple_b.src_port)) && ((tuple_a.dst_port == tuple_b.dst_port))))
-            ||
+            ((((tuple_a.src_port == tuple_b.src_port)) && ((tuple_a.dst_port == tuple_b.dst_port)))) ||
             ((((tuple_a.src_port == tuple_b.dst_port)) && ((tuple_a.dst_port == tuple_b.src_port))))
-        ))
-        &&
+        )) &&
         // Protocol
         ((
             ((tuple_a.protocol == tuple_b.protocol))
@@ -312,7 +308,7 @@ static void
 nstek_create_hash_table(Tuples tuple, Traffics traffic)
 {
     struct Sessions* new_session = nstek_create_session(tuple);
-    uint32_t hash_index = nstek_haash(tuple);
+    uint32_t hash_index = nstek_hash(tuple);
 
     if(hash_table[hash_index].head)
     {   // collision!
