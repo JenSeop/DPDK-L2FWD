@@ -303,9 +303,9 @@ nstek_display(void)
 	printf("%s%s", clr, topLeft);
     printf("\n+--------------------------------------------------------------------------------------------------------+\n");
     
-    for (idx = 1; idx < NSTEK_BUCKET_SIZE; idx++){
+    for (idx = 0; idx < NSTEK_BUCKET_SIZE; idx++){
         iterator = hashTable[idx].head;
-        latestSession = hashTable[idx].count - 5;
+        latestSession = hashTable[idx].count - 1;
 
 		/*
         if(hashTable[idx].count)
@@ -325,7 +325,7 @@ nstek_display(void)
         for(jdx = 0; iterator; jdx++)
         {
             //if((((jdx == firstSession)) || ((jdx == secondSesion))))
-			if(((jdx >= latestSession)))
+			//if(((jdx == latestSession)))
                 printf("%d\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\t%u / %u / %u\n",
                     //nstek_hashSession(iterator->tuple),
 					idx,
