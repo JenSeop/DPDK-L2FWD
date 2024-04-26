@@ -288,7 +288,7 @@ nstek_compare_session(Tuples tuple_a, Tuples tuple_b)
         ((
             ((tuple_a.protocol == tuple_b.protocol))
         ))
-    )
+    );
 }
 
 static struct
@@ -301,7 +301,7 @@ Sessions* nstek_create_session(Tuples tuple)
     new_session->tuple = tuple;
     new_session->next = NULL;
 
-    return new_sessions;
+    return new_session;
 }
 
 static void
