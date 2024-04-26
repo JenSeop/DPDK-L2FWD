@@ -213,10 +213,7 @@ nstek_findEqaulSession(Tuples tuple)
 			while(node)
 			{
 				if(nstek_compareSession(tuple, node->tuple))
-				{
-					printf("\n");
 					return nstek_hashSession(hashTable[idx].head->tuple);
-				}
 				node = node->next;
 			}
 		}
