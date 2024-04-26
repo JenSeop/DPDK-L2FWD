@@ -333,13 +333,13 @@ nstek_create_hash_table(Tuples tuple, Traffics traffic)
     {   // if first session of hash_table
         hash_table[hash_index].session_cnt = 1;
         hash_table[hash_index].head = new_session;
+		// use count of hash table
+		hash_table_use_cnt += 1;
     }
     // calc traffic from session
     hash_table[hash_index].traffic.tx += traffic.tx;
     hash_table[hash_index].traffic.rx += traffic.rx;
     hash_table[hash_index].traffic.dr += traffic.dr;
-	// use count of hash table
-	hash_table_use_cnt += 1;
 }
 
 static void
@@ -364,7 +364,7 @@ nstek_session_display(void)
     // CLEAR DISPLAY
 	printf("%s%s", clr, topLeft);
 	printf("- NSTEK Session Tracker utilizing DPDK L2FWD\n");
-	printf("- Table TOTAL => %u, USE => %u, RATE => %u\n", NSTEK_BUCKET_SIZE, hash_table_use_cnt, (hash_table_use_cnt / NSTEK_BUCKET_SIZE));
+	printf("- Table SET => %u, USE => %u, RATE => %f\%\n", NSTEK_BUCKET_SIZE, hash_table_use_cnt, ((hash_table_use_cnt / NSTEK_BUCKET_SIZE) * 100));
     printf("- Total TX => %u, RX => %u, DR => %u\n\n", tx_total, rx_total, dr_total);
 	printf("HASH\tIP\t\t\t\tPORT\t\tPROTOCOL\tTX\tRX\tDR\n\n");
 
