@@ -221,7 +221,7 @@ nstek_compareSession(Tuples a, Tuples b)
 			((
 				((a.protocol == b.protocol))
 			))
-		))
+		));
 	printf("\n");
 	
 	
