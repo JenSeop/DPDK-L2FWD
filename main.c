@@ -179,8 +179,7 @@ nstek_compareSession(Tuples a, Tuples b)
 		)));
 	printf("port flag = %d\n",
 		((
-			((a.src_port == b.dst_port)) ||
-			((a.dst_port == b.src_port))
+			((a.src_port == b.src_port)) && ((a.dst_port == b.dst_port))
 		)));
 	printf("\n");
     return
