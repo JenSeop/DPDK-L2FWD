@@ -341,7 +341,6 @@ nstek_create_hash_table(Tuples tuple, Traffics traffic)
 static void
 nstek_session_display(void)
 {
-    struct sessions* iterator;
     uint32_t tx_total = 0;
     uint32_t rx_total = 0;
     uint32_t dr_total = 0;
@@ -356,30 +355,29 @@ nstek_session_display(void)
     
     for (hash_index; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
     {
-        iterator = hash_table[hash_index].head;
         // CALC TRAFFIC
         tx_total += hash_table[hash_index].traffic.tx;
         rx_total += hash_table[hash_index].traffic.rx;
         dr_total == hash_table[hash_index].traffic.dr;
 
-        for(session_index; iterator; session_index++)
+        for(session_index; hash_table[hash_index].head; session_index++)
         {
             printf(
                 "%d\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\t%u / %u / %u\n",
                 // Hash Table
                 hash_index,
                 // SRC IP
-                (iterator->tuple.src_ip>>0) & 0XFF,(iterator->tuple.src_ip>>8) & 0XFF,
-                (iterator->tuple.src_ip>>16) & 0XFF,(iterator->tuple.src_ip>>24) & 0XFF,
+                (hash_table[hash_index].head->tuple.src_ip>>0) & 0XFF,(hash_table[hash_index].head->tuple.src_ip>>8) & 0XFF,
+                (hash_table[hash_index].head->tuple.src_ip>>16) & 0XFF,(hash_table[hash_index].head->tuple.src_ip>>24) & 0XFF,
                 // DST IP
-                (iterator->tuple.dst_ip>>0) & 0XFF,(iterator->tuple.dst_ip>>8) & 0XFF,
-                (iterator->tuple.dst_ip>>16) & 0XFF,(iterator->tuple.dst_ip>>24) & 0XFF,
+                (hash_table[hash_index].head->tuple.dst_ip>>0) & 0XFF,(hash_table[hash_index].head->tuple.dst_ip>>8) & 0XFF,
+                (hash_table[hash_index].head->tuple.dst_ip>>16) & 0XFF,(hash_table[hash_index].head->tuple.dst_ip>>24) & 0XFF,
                 // SRC PORT
-                NSTEK_REV_ENDIAN(iterator->tuple.src_port),
+                NSTEK_REV_ENDIAN(hash_table[hash_index].head->tuple.src_port),
                 // DST PORT
-                NSTEK_REV_ENDIAN(iterator->tuple.dst_port),
+                NSTEK_REV_ENDIAN(hash_table[hash_index].head->tuple.dst_port),
                 // PROTOCOL
-                NSTEK_PROTOCOL((iterator->tuple.protocol)),
+                NSTEK_PROTOCOL((hash_table[hash_index].head->tuple.protocol)),
                 // TX
                 hashTable[idx].traffic.tx,
                 // RX
@@ -387,7 +385,7 @@ nstek_session_display(void)
                 // DR
                 hashTable[idx].traffic.dr
             )
-            iterator = iterator->next;
+            hash_table[hash_index].head = hash_table[hash_index].head->next;
         }
 
         if(hash_table[hash_index].session_cnt)
