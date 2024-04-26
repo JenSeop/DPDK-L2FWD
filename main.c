@@ -369,7 +369,7 @@ nstek_session_display(void)
         for(session_index = 0; hash_table[hash_index].head; session_index++)
         {
             printf(
-                "%d\t%d.%d.%d.%d\t%d.%d.%d.%d\t%d %d\t\t%s\t%u \t %u \t %u\n",
+                "%d\t%d.%d.%d.%d\t%d.%d.%d.%d\t%d\t%d\t\t%s\t%u\t%u\t%u\n",
                 // Hash Table
                 hash_index,
                 // SRC IP
