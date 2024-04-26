@@ -369,14 +369,14 @@ nstek_session_display(void)
 			NSTEK_BUCKET_SIZE, hash_table_use_cnt,
 			(((float)hash_table_use_cnt / (float)NSTEK_BUCKET_SIZE) * 100));
     printf("- Total TX => %u, RX => %u, DR => %u\n\n", tx_total, rx_total, dr_total);
-	printf("HASH\tIP\t\t\t\tPORT\t\tPROTOCOL\tTX\tRX\tDR\n\n");
+	printf("HASH\tIP\t\t\t\t\t\tPORT\t\tPROTOCOL\tTX\tRX\tDR\n\n");
 
     for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
     {
         for(session_index = 0; hash_table[hash_index].head; session_index++)
         {
             printf(
-                "%d\t%.3d.%.3d.%.3d.%.3d\t%.3d.%.3d.%.3d.%.3d\t%d\t%d\t%s\t\t%u\t%u\t%u\n",
+                "%d\t%.3d.%.3d.%.3d.%.3d\t\t%.3d.%.3d.%.3d.%.3d\t\t%d\t%d\t%s\t\t%u\t%u\t%u\n",
                 // Hash Table
                 hash_index,
                 // SRC IP
