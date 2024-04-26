@@ -193,12 +193,12 @@ nstek_findEqaulSession(Tuples tuple)
 			node = hashTable[idx].head;
 			while(node)
 			{
+				printf("income = %u %u %u %u %u\n", tuple.src_ip, tuple.dst_ip, tuple.src_port, tuple.dst_port, tuple.protocol);
+				printf("search = %u %u %u %u %u\n", node->tuple.src_ip, node->tuple.dst_ip, node->tuple.src_port, node->tuple.dst_port, node->tuple.protocol);
+				printf("comp = %u\n",nstek_compareSession(tuple, node->tuple));
+				printf("hash = %u\n",nstek_hashSession(tuple));
 				if(nstek_compareSession(tuple, node->tuple))
 				{
-					printf("income = %u %u %u %u %u\n", tuple.src_ip, tuple.dst_ip, tuple.src_port, tuple.dst_port, tuple.protocol);
-					printf("search = %u %u %u %u %u\n", node->tuple.src_ip, node->tuple.dst_ip, node->tuple.src_port, node->tuple.dst_port, node->tuple.protocol);
-					printf("comp = %u\n",nstek_compareSession(tuple, node->tuple));
-					printf("hash = %u\n",nstek_hashSession(tuple));
 					printf("\n");
 					return nstek_hashSession(hashTable[idx].head->tuple);
 				}
