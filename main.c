@@ -352,8 +352,9 @@ nstek_session_display(void)
 
     // CLEAR DISPLAY
 	printf("%s%s", clr, topLeft);
-    //printf("\n+--------------------------------------------------------------------------------------------------------+\n");
-    
+	printf("(NSTEK) Session Tracker utilizing DPDK L2FWD\n")
+    printf("( Generated Total TX - %u, RX - %u, DR - %u)\n\n", tx_total, rx_total, dr_total);
+
     for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
     {
         // CALC TRAFFIC
@@ -388,12 +389,8 @@ nstek_session_display(void)
             );
             hash_table[hash_index].head = hash_table[hash_index].head->next;
         }
-
-        //if(hash_table[hash_index].session_cnt)
-        //     printf("+--------------------------------------------------------------------------------------------------------+\n");
-    }
-
-    printf("( Generated Total TX - %u, RX - %u, DR - %u)\n", tx_total, rx_total, dr_total);
+		printf("\n");
+	}
 }
 /* END OF NSTEK FUNCTION */
 
