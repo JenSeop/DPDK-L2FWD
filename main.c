@@ -365,7 +365,7 @@ nstek_session_display(void)
         for(session_index; iterator; session_index++)
         {
             printf(
-                "%d\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\t%u / %u\n",
+                "%d\t%d.%d.%d.%d / %d.%d.%d.%d\t\t%d / %d\t\t%s\t%u / %u / %u\n",
                 // Hash Table
                 hash_index,
                 // SRC IP
