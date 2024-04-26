@@ -887,7 +887,7 @@ int
 main(int argc, char **argv)
 {
 	/* START OF NSTEK hash_table */
-	hash_table = (struct Bucket *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct Bucket));
+	hash_table = (struct HashTables *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct HashTables));
 	/* END OF NSTEK hash_table */
 
 	struct lcore_queue_conf *qconf;
