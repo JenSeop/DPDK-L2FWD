@@ -194,7 +194,14 @@ nstek_findEqaulSession(Tuples tuple)
 			while(node)
 			{
 				if(nstek_compareSession(tuple, node->tuple))
+				{
+					printf("income = %u %u %u %u %u\n", tuple.src_ip, tuple.dst_ip, tuple.src_port, tuple.dst_port, tuple.protocol);
+					printf("search = %u %u %u %u %u\n", node.src_ip, node.dst_ip, node.src_port, node.dst_port, node.protocol);
+					printf("comp = %u\n",nstek_compareSession(tuple, node->tuple));
+					printf("hash = %u\n",nstek_hashSession(tuple));
+					printf("\n");
 					return nstek_hashSession(hashTable[idx].head->tuple);
+				}
 				node = node->next;
 			}
 		}
@@ -227,10 +234,8 @@ nstek_createBucket(Tuples tuple, Traffics traffic)
 		hashIndex = nstek_hashSession(tuple);
 		// Open addressing for other sessions
 		if(hashTable[hashIndex].head)
-		{
 			while(hashTable[hashIndex].head)
 				hashIndex = hashIndex + 1 % NSTEK_BUCKET_SIZE;
-		}
         hashTable[hashIndex].count = 1;
         hashTable[hashIndex].head = newNode;
 	}
