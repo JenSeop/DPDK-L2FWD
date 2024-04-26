@@ -168,6 +168,20 @@ nstek_hashSession(Tuples tuple)
 static int
 nstek_compareSession(Tuples a, Tuples b)
 {
+	printf("income = %u %u %u %u %u\n", a.src_ip, a.dst_ip, a.src_port, a.dst_port, a.protocol);
+	printf("search = %u %u %u %u %u\n", b.src_ip, b.dst_ip, b.src_port, b.dst_port, b.protocol);
+	printf("hash = %u\n",nstek_hashSession(tuple));
+	printf("ip flag = %d\n",
+		((
+			((a.src_ip == b.src_ip) && (a.dst_ip == b.dst_ip)) ||
+			((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
+		)));
+	printf("port flag = %d\n",
+		((
+			((a.src_port == b.dst_port)) ||
+			((a.dst_port == b.src_port))
+		)));
+	printf("\n");
     return
 		(
 			((
@@ -193,10 +207,6 @@ nstek_findEqaulSession(Tuples tuple)
 			node = hashTable[idx].head;
 			while(node)
 			{
-				printf("income = %u %u %u %u %u\n", tuple.src_ip, tuple.dst_ip, tuple.src_port, tuple.dst_port, tuple.protocol);
-				printf("search = %u %u %u %u %u\n", node->tuple.src_ip, node->tuple.dst_ip, node->tuple.src_port, node->tuple.dst_port, node->tuple.protocol);
-				printf("comp = %u\n",nstek_compareSession(tuple, node->tuple));
-				printf("hash = %u\n",nstek_hashSession(tuple));
 				if(nstek_compareSession(tuple, node->tuple))
 				{
 					printf("\n");
