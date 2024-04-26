@@ -190,8 +190,7 @@ nstek_compareSession(Tuples a, Tuples b)
 				((a.src_ip == b.dst_ip) && (a.dst_ip == b.src_ip))
 			)) &&
 			((
-				((a.src_port == b.dst_port)) ||
-				((a.dst_port == b.src_port))
+				((a.src_port == b.src_port)) && ((a.dst_port == b.dst_port))
 			))
 		);
 }
