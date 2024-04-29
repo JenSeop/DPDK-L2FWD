@@ -301,7 +301,7 @@ Sessions* nstek_create_session(Tuples tuple)
     new_session = (struct Sessions*)malloc(sizeof(struct Sessions));
 	if(new_session == NULL)
 	{
-		perror("Session Allication Fault\n");
+		perror("Session Allocation Fault\n");
 		exit(1);
 	}
 
@@ -345,6 +345,36 @@ nstek_create_hash_table(Tuples tuple, Traffics traffic)
     hash_table[hash_index].traffic.tx += traffic.tx;
     hash_table[hash_index].traffic.rx += traffic.rx;
     hash_table[hash_index].traffic.dr += traffic.dr;
+}
+
+static void
+nstek_free_tables(void)
+{
+	struct Sessions* target_session;
+	struct Sessions* next_session;
+	uint32_t hash_index;
+
+	for(hash_index = 0; hash_index < BUCKET_size; hash_index++)
+	{
+		if(hash_table[hash_index].session_cnt)
+		{
+			hash_table[hash_index].session_cnt = NULL;
+			target_session = hash_table[hash_index].head;
+
+			while(target_session)
+			{
+				if(target_session->next)
+					next_session = target_session->next;
+				else
+					next_session = NULL;
+				free(target_session);
+				target_session = next_session;
+			}
+		}
+	}
+
+	free(hash_table);
+	printf("Allocation Hash Tables & Sessions are delete complete.\n");
 }
 
 static void
@@ -554,6 +584,7 @@ static int
 l2fwd_launch_one_lcore(__rte_unused void *dummy)
 {
 	l2fwd_main_loop();
+	nstek_free_tables();
 	return 0;
 }
 
@@ -905,7 +936,7 @@ main(int argc, char **argv)
 	hash_table = (struct HashTables *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct HashTables));
 	if(hash_table == NULL)
 	{
-		perror("Hash Table Allication Fault\n");
+		perror("Hash Table Allocation Fault\n");
 		exit(1);
 	}
 	/* END OF NSTEK hash_table */
