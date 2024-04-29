@@ -299,6 +299,11 @@ Sessions* nstek_create_session(Tuples tuple)
     struct Sessions* new_session;
 
     new_session = (struct Sessions*)malloc(sizeof(struct Sessions));
+	if(new_session == NULL)
+	{
+		perror("Session Allication Fault\n");
+		exit(1);
+	}
 
     new_session->tuple = tuple;
     new_session->next = NULL;
