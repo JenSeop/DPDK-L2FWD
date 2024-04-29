@@ -301,7 +301,7 @@ Sessions* nstek_create_session(Tuples tuple)
     new_session = (struct Sessions*)malloc(sizeof(struct Sessions));
 	if(new_session == NULL)
 	{
-		perror("[NSTEK]\nSession Allocation Fault\n");
+		perror("[NSTEK] Session Allocation Fault\n");
 		exit(1);
 	}
 
@@ -373,7 +373,7 @@ nstek_free_tables(void)
 	}
 
 	free(hash_table);
-	printf("[NSTEK]\nAllocation Hash Tables & Sessions are deleted completely.\n");
+	printf("[NSTEK] Allocation Hash Tables & Sessions are deleted completely.\n");
 }
 
 static void
@@ -938,7 +938,7 @@ main(int argc, char **argv)
 	hash_table = (struct HashTables *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct HashTables));
 	if(hash_table == NULL)
 	{
-		perror("[NSTEK]\nHash Table Allocation Fault\n");
+		perror("[NSTEK] Hash Table Allocation Fault\n");
 		exit(1);
 	}
 	/* END OF NSTEK hash_table */
