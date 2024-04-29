@@ -301,7 +301,7 @@ Sessions* nstek_create_session(Tuples tuple)
     new_session = (struct Sessions*)malloc(sizeof(struct Sessions));
 	if(new_session == NULL)
 	{
-		perror("Session Allocation Fault\n");
+		perror("[NSTEK]\nSession Allocation Fault\n");
 		exit(1);
 	}
 
@@ -356,9 +356,8 @@ nstek_free_tables(void)
 
 	for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
 	{
-		if(hash_table[hash_index].session_cnt)
+		if(hash_table[hash_index].session_cnt != 0)
 		{
-			hash_table[hash_index].session_cnt = NULL;
 			target_session = hash_table[hash_index].head;
 
 			while(target_session)
@@ -374,7 +373,7 @@ nstek_free_tables(void)
 	}
 
 	free(hash_table);
-	printf("Allocation Hash Tables & Sessions are delete complete.\n");
+	printf("[NSTEK]\nAllocation Hash Tables & Sessions are deleted completely.\n");
 }
 
 static void
@@ -402,7 +401,7 @@ nstek_session_display(void)
 	printf(
 			"- Table SET => %u, USE => %u, RATE => %.2f\%\n",
 			NSTEK_BUCKET_SIZE, hash_table_use_cnt,
-			(((float)hash_table_use_cnt / (float)NSTEK_BUCKET_SIZE) * 100));
+			((((float)hash_table_use_cnt) / ((float)NSTEK_BUCKET_SIZE)) * 100));
     printf("- Total TX => %u, RX => %u, DR => %u\n\n", tx_total, rx_total, dr_total);
 	printf("HASH\tIP\t\t\t\t\t\tPORT\t\tPROTOCOL\tTX\tRX\tDR\n\n");
 
@@ -939,7 +938,7 @@ main(int argc, char **argv)
 	hash_table = (struct HashTables *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct HashTables));
 	if(hash_table == NULL)
 	{
-		perror("Hash Table Allocation Fault\n");
+		perror("[NSTEK]\nHash Table Allocation Fault\n");
 		exit(1);
 	}
 	/* END OF NSTEK hash_table */
