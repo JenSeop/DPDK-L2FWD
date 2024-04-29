@@ -578,13 +578,16 @@ l2fwd_main_loop(void)
 			/* >8 End of read packet from RX queues. */
 		}
 	}
+
+	/* START OF NSTEK MEMORY DELETE */
+	nstek_free_tables();
+	/* END OF NSTEK MEMORY DELETE */
 }
 
 static int
 l2fwd_launch_one_lcore(__rte_unused void *dummy)
 {
 	l2fwd_main_loop();
-	nstek_free_tables();
 	return 0;
 }
 
