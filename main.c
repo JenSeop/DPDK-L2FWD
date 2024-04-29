@@ -898,6 +898,11 @@ main(int argc, char **argv)
 {
 	/* START OF NSTEK hash_table */
 	hash_table = (struct HashTables *)malloc(NSTEK_BUCKET_SIZE * sizeof(struct HashTables));
+	if(hash_table == NULL)
+	{
+		perror("Hash Table Allication Fault\n");
+		exit(1);
+	}
 	/* END OF NSTEK hash_table */
 
 	struct lcore_queue_conf *qconf;
