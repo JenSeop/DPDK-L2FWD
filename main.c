@@ -354,7 +354,7 @@ nstek_free_tables(void)
 	struct Sessions* next_session;
 	uint32_t hash_index;
 
-	for(hash_index = 0; hash_index < BUCKET_size; hash_index++)
+	for(hash_index = 0; hash_index < NSTEK_BUCKET_SIZE; hash_index++)
 	{
 		if(hash_table[hash_index].session_cnt)
 		{
