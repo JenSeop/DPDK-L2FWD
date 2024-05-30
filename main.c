@@ -565,7 +565,7 @@ l2fwd_main_loop(void)
                 tuple.protocol = ipv4_hdr->next_proto_id;
 
                 // TRAFFIC
-                traffic.tx = port_statistics[portid].rx;
+                traffic.tx = port_statistics[portid].tx;
                 traffic.rx = port_statistics[portid].rx;
                 traffic.dr = port_statistics[portid].dropped;
 
